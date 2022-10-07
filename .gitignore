@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 # Testing
-tests/test_images/*
+tests/test_images/*.png
