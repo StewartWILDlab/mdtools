@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "mdtools"
+version = "0.1.0"
+description = "MegaDetector tools - convert and parse MDv5 results"
+authors = ["Valentin <valentin.lucet@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
