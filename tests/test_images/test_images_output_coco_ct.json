@@ -1,0 +1,117 @@
+{
+  "images": [
+    {
+      "id": "image3",
+      "file_name": "image3.png",
+      "width": 1916,
+      "height": 1347
+    },
+    {
+      "id": "image1",
+      "file_name": "image1.png",
+      "width": 1916,
+      "height": 1347
+    },
+    {
+      "id": "image2",
+      "file_name": "image2.png",
+      "width": 1916,
+      "height": 1347
+    }
+  ],
+  "annotations": [
+    {
+      "id": "10b059ec-4759-11ed-8c6d-25b4a4866b7f",
+      "image_id": "image3",
+      "category_id": 1,
+      "bbox": [
+        0.9999603999999999,
+        935.8956,
+        196.9648,
+        178.8816
+      ]
+    },
+    {
+      "id": "10b059ed-4759-11ed-8c6d-25b4a4866b7f",
+      "image_id": "image3",
+      "category_id": 1,
+      "bbox": [
+        0,
+        532.8732,
+        938.84,
+        610.9992
+      ]
+    },
+    {
+      "id": "10b059ee-4759-11ed-8c6d-25b4a4866b7f",
+      "image_id": "image3",
+      "category_id": 1,
+      "bbox": [
+        305.9852,
+        902.8941,
+        486.8556,
+        277.8861
+      ]
+    },
+    {
+      "id": "10b059ef-4759-11ed-8c6d-25b4a4866b7f",
+      "image_id": "image1",
+      "category_id": 1,
+      "bbox": [
+        578.8235999999999,
+        351.9711,
+        45.984,
+        89.99306999999999
+      ]
+    },
+    {
+      "id": "10b059f0-4759-11ed-8c6d-25b4a4866b7f",
+      "image_id": "image1",
+      "category_id": 1,
+      "bbox": [
+        203.86239999999998,
+        38.99565,
+        560.8132,
+        852.9204
+      ]
+    },
+    {
+      "id": "10b059f1-4759-11ed-8c6d-25b4a4866b7f",
+      "image_id": "image2",
+      "category_id": 1,
+      "bbox": [
+        271.8804,
+        951.9249,
+        375.91920000000005,
+        363.9594
+      ]
+    },
+    {
+      "id": "10b059f2-4759-11ed-8c6d-25b4a4866b7f",
+      "image_id": "image2",
+      "category_id": 1,
+      "bbox": [
+        275.904,
+        697.8807,
+        1301.922,
+        617.8688999999999
+      ]
+    }
+  ],
+  "categories": [
+    {
+      "name": "empty",
+      "id": 0
+    },
+    {
+      "id": 1,
+      "name": "animal"
+    }
+  ],
+  "info": {
+    "year": 2020,
+    "version": 1.0,
+    "description": "Fun With Camera Traps",
+    "contributor": "Somebody"
+  }
+}
