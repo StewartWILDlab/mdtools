@@ -1,0 +1,151 @@
+[
+  {
+    "data": { "image": "/data/local-files/?d=/image1.png" },
+    "predictions": [
+      {
+        "result": [
+          {
+            "id": "3d48707445",
+            "type": "rectanglelabels",
+            "value": {
+              "x": 30.209999999999997,
+              "y": 26.13,
+              "width": 2.4,
+              "height": 6.680999999999999,
+              "rotation": 0,
+              "rectanglelabels": ["animal"]
+            },
+            "to_name": "image",
+            "from_name": "label_rectangles",
+            "image_rotation": 0,
+            "original_width": 1916,
+            "original_height": 1347
+          },
+          {
+            "id": "036182d083",
+            "type": "rectanglelabels",
+            "value": {
+              "x": 10.639999999999999,
+              "y": 2.8949999999999996,
+              "width": 29.270000000000003,
+              "height": 63.32,
+              "rotation": 0,
+              "rectanglelabels": ["animal"]
+            },
+            "to_name": "image",
+            "from_name": "label_rectangles",
+            "image_rotation": 0,
+            "original_width": 1916,
+            "original_height": 1347
+          }
+        ],
+        "ground_truth": false
+      }
+    ]
+  },
+  {
+    "data": { "image": "/data/local-files/?d=/image2.png" },
+    "predictions": [
+      {
+        "result": [
+          {
+            "id": "0430d5a9ad",
+            "type": "rectanglelabels",
+            "value": {
+              "x": 14.19,
+              "y": 70.67,
+              "width": 19.62,
+              "height": 27.02,
+              "rotation": 0,
+              "rectanglelabels": ["animal"]
+            },
+            "to_name": "image",
+            "from_name": "label_rectangles",
+            "image_rotation": 0,
+            "original_width": 1916,
+            "original_height": 1347
+          },
+          {
+            "id": "4c8fabe5d7",
+            "type": "rectanglelabels",
+            "value": {
+              "x": 14.399999999999999,
+              "y": 51.81,
+              "width": 67.95,
+              "height": 45.87,
+              "rotation": 0,
+              "rectanglelabels": ["animal"]
+            },
+            "to_name": "image",
+            "from_name": "label_rectangles",
+            "image_rotation": 0,
+            "original_width": 1916,
+            "original_height": 1347
+          }
+        ],
+        "ground_truth": false
+      }
+    ]
+  },
+  {
+    "data": { "image": "/data/local-files/?d=/image3.png" },
+    "predictions": [
+      {
+        "result": [
+          {
+            "id": "0549eb8854",
+            "type": "rectanglelabels",
+            "value": {
+              "x": 0.05218999999999999,
+              "y": 69.48,
+              "width": 10.280000000000001,
+              "height": 13.28,
+              "rotation": 0,
+              "rectanglelabels": ["animal"]
+            },
+            "to_name": "image",
+            "from_name": "label_rectangles",
+            "image_rotation": 0,
+            "original_width": 1916,
+            "original_height": 1347
+          },
+          {
+            "id": "d0ad8eef9b",
+            "type": "rectanglelabels",
+            "value": {
+              "x": 0.0,
+              "y": 39.56,
+              "width": 49.0,
+              "height": 45.36,
+              "rotation": 0,
+              "rectanglelabels": ["animal"]
+            },
+            "to_name": "image",
+            "from_name": "label_rectangles",
+            "image_rotation": 0,
+            "original_width": 1916,
+            "original_height": 1347
+          },
+          {
+            "id": "9c1c071bc6",
+            "type": "rectanglelabels",
+            "value": {
+              "x": 15.97,
+              "y": 67.03,
+              "width": 25.41,
+              "height": 20.630000000000003,
+              "rotation": 0,
+              "rectanglelabels": ["animal"]
+            },
+            "to_name": "image",
+            "from_name": "label_rectangles",
+            "image_rotation": 0,
+            "original_width": 1916,
+            "original_height": 1347
+          }
+        ],
+        "ground_truth": false
+      }
+    ]
+  }
+]
