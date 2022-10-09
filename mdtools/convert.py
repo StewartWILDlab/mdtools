@@ -248,5 +248,6 @@ def md_to_ls(md_json,
              output_json_ls = "output_json_ls.json"):
     coco_ct = md_to_coco_ct(md_json, output_json_coco, 
                             image_base_dir, write = write_coco)
-    coco_ct_to_ls(coco_ct, output_json_ls, 
-                  image_root_url, write = write_ls)
+    ls = coco_ct_to_ls(coco_ct, output_json_ls, 
+                       image_root_url, write = write_ls)
+    return(ls)
