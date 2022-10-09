@@ -7,8 +7,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-Pillow = "^9.2.0"
+Pillow = "9.0.1"
 tqdm = "^4.64.1"
+label-studio-converter = "^0.0.44"
 
 [build-system]
 requires = ["poetry-core"]
