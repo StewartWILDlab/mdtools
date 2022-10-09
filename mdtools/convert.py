@@ -198,8 +198,7 @@ def coco_ct_to_ls(coco_json,
     rectangles_from_name = from_name + '_rectangles'
     tags = {}
 
-    # TODO add tqdm
-    for i, annotation in enumerate(coco['annotations']):
+    for i, annotation in enumerate(tqdm(coco['annotations'])):
         bbox |= 'bbox' in annotation
         
         if bbox and not bbox_once:
@@ -246,8 +245,8 @@ def md_to_ls(md_json,
              write_coco = True,
              output_json_coco = "output_json_coco.json",
              write_ls = True, 
-             out_jason_ls = "output_json_ls.json"):
+             output_json_ls = "output_json_ls.json"):
     coco_ct = md_to_coco_ct(md_json, output_json_coco, 
                             image_base_dir, write = write_coco)
-    coco_ct_to_ls(coco_ct, out_jason_ls, 
+    coco_ct_to_ls(coco_ct, output_json_ls, 
                   image_root_url, write = write_ls)
