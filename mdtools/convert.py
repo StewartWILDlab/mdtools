@@ -1,5 +1,6 @@
 import os
 import json
+from turtle import end_fill
 import uuid
 
 from tqdm import tqdm
@@ -243,9 +244,16 @@ def md_to_ls(md_json,
              image_base_dir = ".",
              image_root_url = '/data/local-files/?d=',
              write_coco = True,
-             output_json_coco = "output_json_coco.json",
+             output_json_coco = None,
              write_ls = True, 
-             output_json_ls = "output_json_ls.json"):
+             output_json_ls = None):
+    
+    if not isinstance(output_json_coco, str):
+        output_json_coco = os.path.splitext(md_json)[0]+"_coco.json"
+    
+    if not isinstance(output_json_ls, str):
+        output_json_ls = os.path.splitext(md_json)[0]+"_ls.json"
+    
     coco_ct = md_to_coco_ct(md_json, output_json_coco, 
                             image_base_dir, write = write_coco)
     ls = coco_ct_to_ls(coco_ct, output_json_ls, 
