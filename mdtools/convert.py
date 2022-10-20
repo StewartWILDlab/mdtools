@@ -3,7 +3,6 @@ import json
 import uuid
 import click
 
-
 from tqdm import tqdm
 from PIL import Image
 from collections import defaultdict
