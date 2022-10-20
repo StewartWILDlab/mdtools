@@ -101,6 +101,7 @@ def md_to_coco_ct(md_json,
             ann['id'] = str(uuid.uuid1())
             ann['image_id'] = im['id']    
             ann['category_id'] = category_id
+            ann['confidence'] = detection['conf']
             
             if category_id != 0:
                 ann['bbox'] = detection['bbox']
@@ -212,13 +213,19 @@ def coco_ct_to_ls(coco_json,
         image_file_name, image_width, image_height = image['file_name'], image['width'], image['height']
 
         # get or create new task
-        task = tasks[image_id] if image_id in tasks else new_task(out_type, image_root_url, image_file_name)
+        if image_id in tasks:
+            task = tasks[image_id]  
+        else: 
+            task = new_task(out_type, image_root_url, image_file_name)
+            task[out_type][0]['score'] = 0
 
         if 'bbox' in annotation:
             item = create_bbox(annotation, categories, rectangles_from_name, image_height, image_width, to_name)
             # Replace item id with id created in the first step
             item['id'] = annotation['id']
             task[out_type][0]['result'].append(item)
+            if annotation['confidence'] > task[out_type][0]['score']:
+                task[out_type][0]['score'] = annotation['confidence']
 
         tasks[image_id] = task
 
@@ -259,3 +266,7 @@ def md_to_ls(md_json,
     ls = coco_ct_to_ls(coco_ct, output_json_ls, 
                        image_root_url, write = write_ls)
     return(ls)
+
+
+md_to_ls("/media/vlucet/TrailCamST/TrailCamStorage/P028_output.json", 
+         image_base_dir="/media/vlucet/TrailCamST/TrailCamStorage/P028/")
