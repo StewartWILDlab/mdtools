@@ -266,7 +266,3 @@ def md_to_ls(md_json,
     ls = coco_ct_to_ls(coco_ct, output_json_ls, 
                        image_root_url, write = write_ls)
     return(ls)
-
-
-md_to_ls("/media/vlucet/TrailCamST/TrailCamStorage/P028_output.json", 
-         image_base_dir="/media/vlucet/TrailCamST/TrailCamStorage/P028/")
