@@ -9,36 +9,41 @@ def mdtools():
 
 
 @mdtools.command('convert')
-@click.argument("format",
+@click.argument("output_format",
                 type=click.Choice(['cct', 'ls', 'csv'], case_sensitive=False))
 @click.argument("md_json",
                 type=click.Path(exists=True))
 @click.option("-ct", "--conf-threshold", default=0.1,
-              type=click.FLOAT)
+              help="Threshold under which predictions are removed",
+              type=click.FLOAT, show_default=True)
 @click.option("-bd", "--image-base-dir",
-              help="Base directory of images",
-              default=".")
+              help="Directory containing the raw images",
+              default=".", show_default=True)
 @click.option("-ru", "--image-root-url",
-              help="", default="/data/local-files/?d=")
+              help="Label Studio local file url",
+              default="/data/local-files/?d=",
+              show_default=True)
 @click.option("-wc", "--write-coco",
-              help="", default=False)
+              help="", default=False, show_default=True)
 @click.option("-wl", "--write-ls",
-              help="", default=True)
+              help="", default=True, show_default=True)
+@click.option("-ws", "--write-csv",
+              help="", default=True, show_default=True)
 @click.option("-oc", "--output-json-coco",
               help="", default=None)
 @click.option("-ol", "--output-json-ls",
               help="", default=None)
-def convert(out, md_json, conf_threshold, image_base_dir, image_root_url,
-            write_coco, output_json_coco, write_ls, output_json_ls):
+def convert(output_format, md_json, conf_threshold, image_base_dir, image_root_url,
+            write_coco, output_json_coco, write_ls, output_json_ls, write_csv):
 
-    if (format == "cct"):
+    if (output_format == "cct"):
 
         mdc.md_to_coco_ct(click.format_filename(md_json),
                           output_json_coco,
-                          image_base_dir, 
+                          image_base_dir,
                           write_coco)
 
-    elif (format == "ls"):
+    elif (output_format == "ls"):
 
         mdc.md_to_ls(click.format_filename(md_json),
                      conf_threshold,
@@ -49,6 +54,7 @@ def convert(out, md_json, conf_threshold, image_base_dir, image_root_url,
                      write_ls,
                      output_json_ls)
 
-    elif (format == "csv"):
+    elif (output_format == "csv"):
 
-        mdc.md_to_csv(click.format_filename(md_json))
+        mdc.md_to_csv(click.format_filename(md_json),
+                      write_csv)

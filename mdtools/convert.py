@@ -273,7 +273,8 @@ def md_to_ls(md_json,
 
 # md_json = "/media/vlucet/TrailCamST/TrailCamStorage/P072_output.json"
 
-def md_to_csv(md_json):
+def md_to_csv(md_json, 
+              write=True):
     
     """ Convert md_json to CSV format
     
@@ -283,11 +284,13 @@ def md_to_csv(md_json):
 
     with open(md_json, 'r') as f:
         md = json.loads(f.read()) 
+    
     dat = pd.json_normalize(md["images"])
     folder = os.path.basename(md_json).split("_")[0]
 
     full_data = pd.DataFrame()
-    for image in md["images"]:
+    
+    for image in tqdm(md["images"]):
         if len(image["detections"]) != 0:
             dat = (pd.json_normalize(image["detections"])
                 .assign(file = image["file"])
@@ -296,5 +299,9 @@ def md_to_csv(md_json):
                     df['category'].map(lambda category: 
                         int(category))))
             full_data = pd.concat([full_data, dat])
+    
+    if (write):
+        name_out = os.path.join(os.path.dirname(md_json), folder)+"_output.csv"
+        full_data.to_csv(name_out)
             
     return(full_data)
