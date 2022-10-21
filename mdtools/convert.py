@@ -148,7 +148,7 @@ def coco_ct_to_ls(coco_json,
                   to_name = 'image',
                   from_name = 'label',
                   out_type = "predictions",
-                  generate_config_file = True,
+                  generate_config_file = False,
                   write = True):
 
     """ Convert COCO CT labeling to Label Studio JSON

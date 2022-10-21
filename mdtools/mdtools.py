@@ -19,7 +19,7 @@ def mdtools():
 @click.option("-ru", "--image-root-url",
               help="", default="/data/local-files/?d=")
 @click.option("-wc", "--write-coco",
-              help="", default=True)
+              help="", default=False)
 @click.option("-wl", "--write-ls",
               help="", default=True)
 @click.option("-oc", "--output-json-coco",
