@@ -170,8 +170,7 @@ def coco_ct_to_ls(coco_json,
     # Open file if needed
     if isinstance(coco_json, str):
         with open(coco_json, 'r') as f:
-            coco = f.read()        
-        coco = json.loads(coco_json)
+            coco = json.loads(f.read())       
     elif isinstance(coco_json, dict):
         coco = coco_json
 
