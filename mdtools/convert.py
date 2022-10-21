@@ -1,17 +1,18 @@
 import os
 import json
 import uuid
+import pandas as pd
 
 from tqdm import tqdm
 from PIL import Image
 from collections import defaultdict
+from numpy import linspace
 
 from label_studio_converter.imports.label_config import generate_label_config
 from label_studio_converter.imports.coco import create_bbox
 from label_studio_converter.imports.coco import new_task
 
-# TODO Add info dict argument
-# TODO Add licenses dict
+# TODO Add info + license dict argument
 def md_to_coco_ct(md_json, 
                   output_json, 
                   image_base_dir = ".", 
@@ -269,3 +270,31 @@ def md_to_ls(md_json,
     ls = coco_ct_to_ls(coco_ct, output_json_ls, conf_threshold,
                        image_root_url, write = write_ls)
     return(ls)
+
+# md_json = "/media/vlucet/TrailCamST/TrailCamStorage/P072_output.json"
+
+def md_to_csv(md_json):
+    
+    """ Convert md_json to CSV format
+    
+    Extract information from the md_json.
+    
+    """
+
+    with open(md_json, 'r') as f:
+        md = json.loads(f.read()) 
+    dat = pd.json_normalize(md["images"])
+    folder = os.path.basename(md_json).split("_")[0]
+
+    full_data = pd.DataFrame()
+    for image in md["images"]:
+        if len(image["detections"]) != 0:
+            dat = (pd.json_normalize(image["detections"])
+                .assign(file = image["file"])
+                .assign(folder = folder)
+                .assign(category = lambda df: 
+                    df['category'].map(lambda category: 
+                        int(category))))
+            full_data = pd.concat([full_data, dat])
+            
+    return(full_data)
