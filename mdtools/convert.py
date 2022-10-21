@@ -212,7 +212,7 @@ def coco_ct_to_ls(coco_json,
         image_file_name, image_width, image_height = image['file_name'], image['width'], image['height']
         annotation_conf = annotation['confidence']
 
-        if annotation_conf >= conf_threshold:
+        if float(annotation_conf) >= float(conf_threshold):
 
             # get or create new task
             if image_id in tasks:
@@ -226,7 +226,7 @@ def coco_ct_to_ls(coco_json,
                 # Replace item id with id created in the first step
                 item['id'] = annotation['id']
                 task[out_type][0]['result'].append(item)
-                if annotation_conf > task[out_type][0]['score']:
+                if float(annotation_conf) > float(task[out_type][0]['score']):
                     task[out_type][0]['score'] = annotation_conf
 
             tasks[image_id] = task
@@ -239,9 +239,10 @@ def coco_ct_to_ls(coco_json,
 
     if len(tasks) > 0:
         tasks = [tasks[key] for key in sorted(tasks.keys())]
+        task_len = len(tasks)
         
         if write:
-            print(f'Saving Label Studio JSON to {output_json}')
+            print(f'Saving {task_len} tasks to Label Studio JSON file {output_json}')
             with open(output_json, 'w') as out:
                 json.dump(tasks, out)
         
@@ -250,11 +251,12 @@ def coco_ct_to_ls(coco_json,
         print('ERROR: No labels converted')
         
 def md_to_ls(md_json,
+             conf_threshold = 0.1,
              image_base_dir = ".",
              image_root_url = '/data/local-files/?d=',
-             write_coco = True,
+             write_coco = False,
              output_json_coco = None,
-             write_ls = True, 
+             write_ls = False, 
              output_json_ls = None):
     
     if not isinstance(output_json_coco, str):
@@ -265,6 +267,6 @@ def md_to_ls(md_json,
     
     coco_ct = md_to_coco_ct(md_json, output_json_coco, 
                             image_base_dir, write = write_coco)
-    ls = coco_ct_to_ls(coco_ct, output_json_ls, 
+    ls = coco_ct_to_ls(coco_ct, output_json_ls, conf_threshold,
                        image_root_url, write = write_ls)
     return(ls)
