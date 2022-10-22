@@ -6,7 +6,7 @@ MegaDetector tools - convert and parse MDv5 results
 
 #### Command: convert
 
-```bash
+```
 Usage: mdtools convert [OPTIONS] {cct|ls|csv} MD_JSON
 
 Options:
