@@ -223,47 +223,52 @@ def coco_ct_to_ls(
     tags = {}
 
     for i, annotation in enumerate(tqdm(coco["annotations"])):
-        bbox |= "bbox" in annotation
+        
+        if annotation["isempty"]:
+            next
+            
+        else:
+            bbox |= "bbox" in annotation
 
-        if bbox and not bbox_once:
-            tags.update({rectangles_from_name: "RectangleLabels"})
-            bbox_once = True
+            if bbox and not bbox_once:
+                tags.update({rectangles_from_name: "RectangleLabels"})
+                bbox_once = True
 
-        # read image sizes & detection confidence
-        image_id = annotation["image_id"]
-        image = images[image_id]
-        image_file_name, image_width, image_height = (
-            image["file_name"],
-            image["width"],
-            image["height"],
-        )
-        annotation_conf = annotation["confidence"]
+            # read image sizes & detection confidence
+            image_id = annotation["image_id"]
+            image = images[image_id]
+            image_file_name, image_width, image_height = (
+                image["file_name"],
+                image["width"],
+                image["height"],
+            )
+            annotation_conf = annotation["confidence"]
 
-        if float(annotation_conf) >= float(conf_threshold):
+            if float(annotation_conf) >= float(conf_threshold):
 
-            # get or create new task
-            if image_id in tasks:
-                task = tasks[image_id]
-            else:
-                task = new_task(out_type, image_root_url, image_file_name)
-                task[out_type][0]["score"] = 0
+                # get or create new task
+                if image_id in tasks:
+                    task = tasks[image_id]
+                else:
+                    task = new_task(out_type, image_root_url, image_file_name)
+                    task[out_type][0]["score"] = 0
 
-            if "bbox" in annotation:
-                item = create_bbox(
-                    annotation,
-                    categories,
-                    rectangles_from_name,
-                    image_height,
-                    image_width,
-                    to_name,
-                )
-                # Replace item id with id created in the first step
-                item["id"] = annotation["id"]
-                task[out_type][0]["result"].append(item)
-                if float(annotation_conf) > float(task[out_type][0]["score"]):
-                    task[out_type][0]["score"] = annotation_conf
+                if "bbox" in annotation:
+                    item = create_bbox(
+                        annotation,
+                        categories,
+                        rectangles_from_name,
+                        image_height,
+                        image_width,
+                        to_name,
+                    )
+                    # Replace item id with id created in the first step
+                    item["id"] = annotation["id"]
+                    task[out_type][0]["result"].append(item)
+                    if float(annotation_conf) > float(task[out_type][0]["score"]):
+                        task[out_type][0]["score"] = annotation_conf
 
-            tasks[image_id] = task
+                tasks[image_id] = task
 
     # generate and save labeling config
     if generate_config_file:
