@@ -25,7 +25,6 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
     # Initialize empty arrays / dicts
     images = []
     annotations = []
-    image_ids_to_annotations = defaultdict(list)
     category_name_to_category = {}
 
     # Force the empty category to be ID 0
@@ -80,44 +79,55 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
         if "detections" in entry.keys():
             detections = entry["detections"]
 
-            # detection = detections[0]
-            for detection in detections:
+            if (len(detections) >= 1):
+                # detection = detections[0]
+                for detection in detections:
 
-                category_name = categories_this_dataset[detection["category"]]
-                category_name = category_name.strip().lower()
-                category_name = category_name.replace(" ", "_")
+                    category_name = categories_this_dataset[detection["category"]]
+                    category_name = category_name.strip().lower()
+                    category_name = category_name.replace(" ", "_")
 
-                # Have we seen this category before?
-                if category_name in category_name_to_category:
-                    category_id = category_name_to_category[category_name]["id"]
-                else:
-                    category_id = next_category_id
-                    category = {}
-                    category["id"] = category_id
-                    print("Adding category {}".format(category_name))
-                    category["name"] = category_name
-                    category_name_to_category[category_name] = category
-                    next_category_id += 1
+                    # Have we seen this category before?
+                    if category_name in category_name_to_category:
+                        category_id = category_name_to_category[category_name]["id"]
+                    else:
+                        category_id = next_category_id
+                        category = {}
+                        category["id"] = category_id
+                        print("Adding category {}".format(category_name))
+                        category["name"] = category_name
+                        category_name_to_category[category_name] = category
+                        next_category_id += 1
 
-                # Create an annotation
+                    # Create an annotation
+                    ann = {}
+                    ann["id"] = str(uuid.uuid1())
+                    ann["image_id"] = im["id"]
+                    ann["category_id"] = category_id
+                    ann["confidence"] = detection["conf"]
+                    ann["isempty"] = False
+
+                    if category_id != 0:
+                        ann["bbox"] = detection["bbox"]
+                        # MegaDetector: [x,y,width,eight] (normalized, origin upper-left)
+                        # CCT: [x,y,width,height] (absolute, origin upper-left)
+                        ann["bbox"][0] = ann["bbox"][0] * im["width"]
+                        ann["bbox"][1] = ann["bbox"][1] * im["height"]
+                        ann["bbox"][2] = ann["bbox"][2] * im["width"]
+                        ann["bbox"][3] = ann["bbox"][3] * im["height"]
+                    else:
+                        assert detection["bbox"] == [0, 0, 0, 0]
+                    
+                    annotations.append(ann)
+
+            else:
                 ann = {}
                 ann["id"] = str(uuid.uuid1())
                 ann["image_id"] = im["id"]
-                ann["category_id"] = category_id
-                ann["confidence"] = detection["conf"]
-
-                if category_id != 0:
-                    ann["bbox"] = detection["bbox"]
-                    # MegaDetector: [x,y,width,eight] (normalized, origin upper-left)
-                    # CCT: [x,y,width,height] (absolute, origin upper-left)
-                    ann["bbox"][0] = ann["bbox"][0] * im["width"]
-                    ann["bbox"][1] = ann["bbox"][1] * im["height"]
-                    ann["bbox"][2] = ann["bbox"][2] * im["width"]
-                    ann["bbox"][3] = ann["bbox"][3] * im["height"]
-                else:
-                    assert detection["bbox"] == [0, 0, 0, 0]
+                ann["category_id"] = 0
+                ann["isempty"] = True
                 annotations.append(ann)
-                image_ids_to_annotations[im["id"]].append(ann)
+
         else:
             print("Error on file %s" % entry["file"])
 
