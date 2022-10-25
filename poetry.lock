@@ -97,6 +97,17 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "ExifRead"
+version = "3.0.0"
+description = "Read Exif metadata from tiff and jpeg files."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+dev = ["mypy (==0.950)", "pylint (==2.13.8)"]
+
+[[package]]
 name = "fonttools"
 version = "4.37.4"
 description = "Tools to manipulate font files"
@@ -476,7 +487,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "db840fad9baa6ca9c47985fadd755541098435ca475806c407195f0ffeff5660"
+content-hash = "f1b1d0186ac7b41c0491a3ec9e5e4e597a8d1f4bf1e453b31e33f793686c1aeb"
 
 [metadata.files]
 appdirs = [
@@ -581,6 +592,10 @@ contourpy = [
 cycler = [
     {file = "cycler-0.11.0-py3-none-any.whl", hash = "sha256:3a27e95f763a428a739d2add979fa7494c912a32c17c4c38c4d5f082cad165a3"},
     {file = "cycler-0.11.0.tar.gz", hash = "sha256:9c87405839a19696e837b3b818fed3f5f69f16f1eec1a1ad77e043dcea9c772f"},
+]
+ExifRead = [
+    {file = "ExifRead-3.0.0-py3-none-any.whl", hash = "sha256:2c5c59ef03b3bbee75b82b82d2498006b3c13509f35c9a76c7552faff73fa2d5"},
+    {file = "ExifRead-3.0.0.tar.gz", hash = "sha256:0ac5a364169dbdf2bd62f94f5c073970ab6694a3166177f5e448b10c943e2ca4"},
 ]
 fonttools = [
     {file = "fonttools-4.37.4-py3-none-any.whl", hash = "sha256:afae1b39555f9c3f0ad1f0f1daf678e5ad157e38c8842ecb567951bf1a9b9fd7"},
