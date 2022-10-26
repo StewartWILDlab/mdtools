@@ -79,7 +79,7 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
         if "detections" in entry.keys():
             detections = entry["detections"]
 
-            if (len(detections) >= 1):
+            if len(detections) >= 1:
                 # detection = detections[0]
                 for detection in detections:
 
@@ -117,7 +117,7 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
                         ann["bbox"][3] = ann["bbox"][3] * im["height"]
                     else:
                         assert detection["bbox"] == [0, 0, 0, 0]
-                    
+
                     annotations.append(ann)
 
             else:
@@ -223,10 +223,10 @@ def coco_ct_to_ls(
     tags = {}
 
     for i, annotation in enumerate(tqdm(coco["annotations"])):
-        
+
         if annotation["isempty"]:
             next
-            
+
         else:
             bbox |= "bbox" in annotation
 
@@ -348,18 +348,35 @@ def md_to_csv(md_json, read_exif=True, write=True):
                 )
 
                 if read_exif:
-                    filename = os.path.join(md_json.split("_")[0],
-                                            image["file"])
+                    filename = os.path.join(md_json.split("_")[0], image["file"])
                     with open(filename, "rb") as f:
                         tags = exifread.process_file(
                             f, details=False, stop_tag="DateTimeOriginal"
                         )
                     tags_df = pd.json_normalize(tags)
-                    tags_df['file'] = image["file"]
-                    dat = pd.merge(dat, tags_df, 
-                                   how='left', on='file')
+                    tags_df["file"] = image["file"]
+                    dat = pd.merge(dat, tags_df, how="left", on="file")
 
                 full_data = pd.concat([full_data, dat])
+
+            else:
+                                
+                dat = pd.DataFrame({"file":[image["file"]],
+                                    "folder":[folder], 
+                                    "category":[0]})
+                
+                if read_exif:
+                    filename = os.path.join(md_json.split("_")[0], image["file"])
+                    with open(filename, "rb") as f:
+                        tags = exifread.process_file(
+                            f, details=False, stop_tag="DateTimeOriginal"
+                        )
+                    tags_df = pd.json_normalize(tags)
+                    tags_df["file"] = image["file"]
+                    dat = pd.merge(dat, tags_df, how="left", on="file")
+                    
+                full_data = pd.concat([full_data, dat])
+                
         else:
             print("Error on file %s" % image["file"])
 
