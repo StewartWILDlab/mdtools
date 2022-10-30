@@ -97,17 +97,6 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
-name = "ExifRead"
-version = "3.0.0"
-description = "Read Exif metadata from tiff and jpeg files."
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.extras]
-dev = ["mypy (==0.950)", "pylint (==2.13.8)"]
-
-[[package]]
 name = "fonttools"
 version = "4.37.4"
 description = "Tools to manipulate font files"
@@ -316,6 +305,19 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "PyExifTool"
+version = "0.5.4"
+description = "Python wrapper for exiftool"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+docs = ["packaging", "sphinx", "sphinx-autoapi", "sphinx-autodoc-typehints", "sphinx-rtd-theme"]
+json = ["ujson"]
+test = ["packaging"]
+
+[[package]]
 name = "pyparsing"
 version = "3.0.9"
 description = "pyparsing module - Classes and methods to define and execute parsing grammars"
@@ -487,7 +489,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "f1b1d0186ac7b41c0491a3ec9e5e4e597a8d1f4bf1e453b31e33f793686c1aeb"
+content-hash = "edd4d4bfe050876e14579c9cb767420c69e0276456e2690448079c284ce11c3b"
 
 [metadata.files]
 appdirs = [
@@ -592,10 +594,6 @@ contourpy = [
 cycler = [
     {file = "cycler-0.11.0-py3-none-any.whl", hash = "sha256:3a27e95f763a428a739d2add979fa7494c912a32c17c4c38c4d5f082cad165a3"},
     {file = "cycler-0.11.0.tar.gz", hash = "sha256:9c87405839a19696e837b3b818fed3f5f69f16f1eec1a1ad77e043dcea9c772f"},
-]
-ExifRead = [
-    {file = "ExifRead-3.0.0-py3-none-any.whl", hash = "sha256:2c5c59ef03b3bbee75b82b82d2498006b3c13509f35c9a76c7552faff73fa2d5"},
-    {file = "ExifRead-3.0.0.tar.gz", hash = "sha256:0ac5a364169dbdf2bd62f94f5c073970ab6694a3166177f5e448b10c943e2ca4"},
 ]
 fonttools = [
     {file = "fonttools-4.37.4-py3-none-any.whl", hash = "sha256:afae1b39555f9c3f0ad1f0f1daf678e5ad157e38c8842ecb567951bf1a9b9fd7"},
@@ -921,6 +919,10 @@ py = [
 pycodestyle = [
     {file = "pycodestyle-2.9.1-py2.py3-none-any.whl", hash = "sha256:d1735fc58b418fd7c5f658d28d943854f8a849b01a5d0a1e6f3f3fdd0166804b"},
     {file = "pycodestyle-2.9.1.tar.gz", hash = "sha256:2c9607871d58c76354b697b42f5d57e1ada7d261c261efac224b664affdc5785"},
+]
+PyExifTool = [
+    {file = "PyExifTool-0.5.4-py3-none-any.whl", hash = "sha256:a223852c8899cb118858439b610c820cc5284843f017e42c50d0f13099d6ea15"},
+    {file = "PyExifTool-0.5.4.tar.gz", hash = "sha256:d14244ded3cafb0db01ca8bd85453ed99b0d9a0bcaca6ba3106ff662b580c890"},
 ]
 pyparsing = [
     {file = "pyparsing-3.0.9-py3-none-any.whl", hash = "sha256:5026bae9a10eeaefb61dab2f09052b9f4307d44aee4eda64b309723d8d206bbc"},
