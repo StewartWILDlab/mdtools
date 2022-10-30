@@ -1,7 +1,7 @@
 import os
 import json
 import uuid
-import exifread
+import exiftool
 import pandas as pd
 
 from tqdm import tqdm
@@ -13,8 +13,9 @@ from label_studio_converter.imports.coco import create_bbox
 from label_studio_converter.imports.coco import new_task
 
 # TODO Add info + license dict argument
-def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
 
+
+def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
     """Convert MegaDetector output JSON into a COCO-CT JSON
 
     Code taken from https://github.com/microsoft/CameraTraps/tree/main/data_management.
@@ -69,7 +70,8 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
         im["id"] = image_id
         im["file_name"] = image_relative_path
 
-        pil_image = Image.open(os.path.join(image_base_dir, image_relative_path))
+        pil_image = Image.open(os.path.join(
+            image_base_dir, image_relative_path))
         width, height = pil_image.size
         im["width"] = width
         im["height"] = height
@@ -172,7 +174,6 @@ def coco_ct_to_ls(
     generate_config_file=False,
     write=True,
 ):
-
     """Convert COCO CT labeling to Label Studio JSON
 
     Adapted from label_studio_converter.imports.coco
@@ -272,16 +273,19 @@ def coco_ct_to_ls(
 
     # generate and save labeling config
     if generate_config_file:
-        label_config_file = output_json.replace(".json", "") + ".label_config.xml"
+        label_config_file = output_json.replace(
+            ".json", "") + ".label_config.xml"
         print(f"Saving Label Studio XML to {label_config_file}")
-        generate_label_config(categories, tags, to_name, from_name, label_config_file)
+        generate_label_config(categories, tags, to_name,
+                              from_name, label_config_file)
 
     if len(tasks) > 0:
         tasks = [tasks[key] for key in sorted(tasks.keys())]
         task_len = len(tasks)
 
         if write:
-            print(f"Saving {task_len} tasks to Label Studio JSON file {output_json}")
+            print(
+                f"Saving {task_len} tasks to Label Studio JSON file {output_json}")
             with open(output_json, "w") as out:
                 json.dump(tasks, out)
 
@@ -307,7 +311,8 @@ def md_to_ls(
     if not isinstance(output_json_ls, str):
         output_json_ls = os.path.splitext(md_json)[0] + "_ls.json"
 
-    coco_ct = md_to_coco_ct(md_json, output_json_coco, image_base_dir, write=write_coco)
+    coco_ct = md_to_coco_ct(md_json, output_json_coco,
+                            image_base_dir, write=write_coco)
     ls = coco_ct_to_ls(
         coco_ct, output_json_ls, conf_threshold, image_root_url, write=write_ls
     )
@@ -315,7 +320,6 @@ def md_to_ls(
 
 
 def md_to_csv(md_json, read_exif=True, write=True):
-
     """Convert md_json to CSV format
 
     Extract information from the md_json.
@@ -332,7 +336,9 @@ def md_to_csv(md_json, read_exif=True, write=True):
 
     for image in tqdm(md["images"]):
         if "detections" in image.keys():
+
             if len(image["detections"]) != 0:
+
                 dat = (
                     pd.json_normalize(image["detections"])
                     .assign(file=image["file"])
@@ -345,40 +351,44 @@ def md_to_csv(md_json, read_exif=True, write=True):
                 )
 
                 if read_exif:
-                    filename = os.path.join(md_json.split("_")[0], image["file"])
-                    with open(filename, "rb") as f:
-                        tags = exifread.process_file(
-                            f, details=False, stop_tag="DateTimeOriginal"
-                        )
+                    filename = os.path.join(
+                        md_json.split("_")[0], image["file"])
+
+                    with exiftool.ExifToolHelper() as et:
+                        tags = et.get_metadata(filename)[0]
+
                     tags_df = pd.json_normalize(tags)
                     tags_df["file"] = image["file"]
                     dat = pd.merge(dat, tags_df, how="left", on="file")
-
-                full_data = pd.concat([full_data, dat])
 
             else:
-                                
-                dat = pd.DataFrame({"file":[image["file"]],
-                                    "folder":[folder], 
-                                    "category":[0]})
-                
+
+                dat = (pd.DataFrame({"category": [0]})
+                       .assign(conf = 'NA')
+                       .assign(bbox = 'NA')
+                       .assign(file=image["file"])
+                       .assign(folder=folder)
+                       )
+
                 if read_exif:
-                    filename = os.path.join(md_json.split("_")[0], image["file"])
-                    with open(filename, "rb") as f:
-                        tags = exifread.process_file(
-                            f, details=False, stop_tag="DateTimeOriginal"
-                        )
+                    filename = os.path.join(
+                        md_json.split("_")[0], image["file"])
+
+                    with exiftool.ExifToolHelper() as et:
+                        tags = et.get_metadata(filename)[0]
+
                     tags_df = pd.json_normalize(tags)
                     tags_df["file"] = image["file"]
                     dat = pd.merge(dat, tags_df, how="left", on="file")
-                    
-                full_data = pd.concat([full_data, dat])
-                
+
+            full_data = pd.concat([full_data, dat])
+
         else:
             print("Error on file %s" % image["file"])
 
     if write:
-        name_out = os.path.join(os.path.dirname(md_json), folder) + "_output.csv"
+        name_out = os.path.join(os.path.dirname(
+            md_json), folder) + "_output.csv"
         full_data.to_csv(name_out)
 
     return full_data
