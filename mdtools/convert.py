@@ -314,9 +314,6 @@ def md_to_ls(
     return ls
 
 
-# md_json = "/media/vlucet/TrailCamST/TrailCamStorage/P072_output.json"
-
-
 def md_to_csv(md_json, read_exif=True, write=True):
 
     """Convert md_json to CSV format
