@@ -1,6 +1,7 @@
 import click
 
 from mdtools import convert as mdc
+from mdtools import readexif as mdr
 
 
 @click.group
@@ -85,4 +86,4 @@ def readexif(
     md_json,
     write_csv
 ):
-    mdc.read_exif_from_md(md_json, tags='all', write=write_csv)
+    mdr.read_exif_from_md(md_json, tags='all', write=write_csv)

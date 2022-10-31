@@ -1,8 +1,9 @@
 import exiftool
 import json
 import os
-import tqdm
 import pandas as pd
+
+from tqdm import tqdm
 
 
 def read_exif_from_md(md_json, tags='all', write=True):
@@ -35,7 +36,7 @@ def read_exif_from_md(md_json, tags='all', write=True):
                 tags = et.get_tags(filename, the_tags)[0]
 
             tags_df = pd.json_normalize(tags)
-            full_data = pd.concat([full_data, dat])
+            full_data = pd.concat([full_data, tags_df])
 
         else:
             print("Error on file %s" % image["file"])
