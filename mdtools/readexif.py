@@ -5,6 +5,8 @@ import pandas as pd
 
 from tqdm import tqdm
 
+# TODO add batch size arg
+
 
 def read_exif_from_md(md_json, tags='all', write=True):
     """Convert md_json to CSV format
@@ -33,14 +35,15 @@ def read_exif_from_md(md_json, tags='all', write=True):
     # for image in tqdm(images):
     batchsize = 10
     base_path = md_json.split("_")[0]
-    
+
     for i in tqdm(range(0, len(images), batchsize)):
         batch = images[i:i+batchsize]
 
         filenames = [os.path.join(base_path, img["file"]) for img in batch]
 
         with exiftool.ExifToolHelper() as et:
-            tags = [et.get_tags(filename, the_tags)[0] for filename in filenames]
+            tags = [et.get_tags(filename, the_tags)[0]
+                    for filename in filenames]
 
         tags_df = pd.json_normalize(tags)
         full_data = pd.concat([full_data, tags_df])
