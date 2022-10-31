@@ -319,12 +319,19 @@ def md_to_ls(
     return ls
 
 
-def md_to_csv(md_json, read_exif=True, write=True):
+def md_to_csv(md_json, read_exif=False, write=True):
     """Convert md_json to CSV format
 
     Extract information from the md_json.
 
     """
+
+    the_tags = ["File:FileName", "File:Directory",
+                "EXIF:DateTimeOriginal", "MakerNotes:DateTimeOriginal",
+                "MakerNotes:DayOfWeek", "MakerNotes:MoonPhase",
+                "MakerNotes:AmbientTemperature", "MakerNotes:MotionSensitivity",
+                "MakerNotes:BatteryVoltage", "MakerNotes:BatteryVoltageAvg",
+                "MakerNotes:UserLabel"]
 
     with open(md_json, "r") as f:
         md = json.loads(f.read())
@@ -355,7 +362,7 @@ def md_to_csv(md_json, read_exif=True, write=True):
                         md_json.split("_")[0], image["file"])
 
                     with exiftool.ExifToolHelper() as et:
-                        tags = et.get_metadata(filename)[0]
+                        tags = et.get_tags(filename, the_tags)[0]
 
                     tags_df = pd.json_normalize(tags)
                     tags_df["file"] = image["file"]
@@ -364,8 +371,8 @@ def md_to_csv(md_json, read_exif=True, write=True):
             else:
 
                 dat = (pd.DataFrame({"category": [0]})
-                       .assign(conf = 'NA')
-                       .assign(bbox = 'NA')
+                       .assign(conf='NA')
+                       .assign(bbox='NA')
                        .assign(file=image["file"])
                        .assign(folder=folder)
                        )
@@ -375,7 +382,7 @@ def md_to_csv(md_json, read_exif=True, write=True):
                         md_json.split("_")[0], image["file"])
 
                     with exiftool.ExifToolHelper() as et:
-                        tags = et.get_metadata(filename)[0]
+                        tags = et.get_tags(filename, the_tags)[0]
 
                     tags_df = pd.json_normalize(tags)
                     tags_df["file"] = image["file"]
