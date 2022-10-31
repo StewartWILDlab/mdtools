@@ -25,25 +25,29 @@ def read_exif_from_md(md_json, tags='all', write=True):
     folder = os.path.basename(md_json).split("_")[0]
 
     full_data = pd.DataFrame()
+    images = md["images"]
+    images_names = [img['file'] for img in images]
+    images_has_detect_key = ['detections' in img.keys() for img in images]
+    images = [img for i, img in enumerate(images) if images_has_detect_key[i]]
 
-    for image in tqdm(md["images"]):
-        if "detections" in image.keys():
+    # for image in tqdm(images):
+    batchsize = 10
+    base_path = md_json.split("_")[0]
+    
+    for i in tqdm(range(0, len(images), batchsize)):
+        batch = images[i:i+batchsize]
 
-            filename = os.path.join(
-                md_json.split("_")[0], image["file"])
+        filenames = [os.path.join(base_path, img["file"]) for img in batch]
 
-            with exiftool.ExifToolHelper() as et:
-                tags = et.get_tags(filename, the_tags)[0]
+        with exiftool.ExifToolHelper() as et:
+            tags = [et.get_tags(filename, the_tags)[0] for filename in filenames]
 
-            tags_df = pd.json_normalize(tags)
-            full_data = pd.concat([full_data, tags_df])
-
-        else:
-            print("Error on file %s" % image["file"])
+        tags_df = pd.json_normalize(tags)
+        full_data = pd.concat([full_data, tags_df])
 
     if write:
         name_out = os.path.join(os.path.dirname(
-            md_json), folder) + "_output.csv"
+            md_json), folder) + "_exif_output.csv"
         full_data.to_csv(name_out)
 
     return full_data
