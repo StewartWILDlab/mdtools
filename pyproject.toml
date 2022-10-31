@@ -6,7 +6,7 @@ authors = ["Valentin <valentin.lucet@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "*"
+python = "^3.8"
 Pillow = "9.0.1"
 tqdm = "^4.64.1"
 label-studio-converter = "^0.0.44"
