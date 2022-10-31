@@ -37,6 +37,7 @@ def mdtools():
 )
 @click.option("-wc", "--write-coco", help="", default=False, show_default=True)
 @click.option("-wl", "--write-ls", help="", default=True, show_default=True)
+@click.option("-re", "--read-exif", help="", default=True, show_default=True)
 @click.option("-ws", "--write-csv", help="", default=True, show_default=True)
 @click.option("-oc", "--output-json-coco", help="", default=None)
 @click.option("-ol", "--output-json-ls", help="", default=None)
@@ -49,6 +50,7 @@ def convert(
     write_coco,
     output_json_coco,
     write_ls,
+    read_exif,
     output_json_ls,
     write_csv,
 ):
@@ -74,4 +76,4 @@ def convert(
 
     elif output_format == "csv":
 
-        mdc.md_to_csv(click.format_filename(md_json), write_csv)
+        mdc.md_to_csv(click.format_filename(md_json), read_exif, write_csv)
