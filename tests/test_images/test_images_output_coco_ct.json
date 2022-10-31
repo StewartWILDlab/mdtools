@@ -21,9 +21,11 @@
   ],
   "annotations": [
     {
-      "id": "283d9a88-4778-11ed-8c6d-25b4a4866b7f",
+      "id": "465dc238-5928-11ed-9637-8f6b1fb7beeb",
       "image_id": "image3",
       "category_id": 1,
+      "confidence": 0.0231,
+      "isempty": false,
       "bbox": [
         0.9999603999999999,
         935.8956,
@@ -32,9 +34,11 @@
       ]
     },
     {
-      "id": "283d9a89-4778-11ed-8c6d-25b4a4866b7f",
+      "id": "465dc239-5928-11ed-9637-8f6b1fb7beeb",
       "image_id": "image3",
       "category_id": 1,
+      "confidence": 0.949,
+      "isempty": false,
       "bbox": [
         0,
         532.8732,
@@ -43,9 +47,11 @@
       ]
     },
     {
-      "id": "283d9a8a-4778-11ed-8c6d-25b4a4866b7f",
+      "id": "465dc23a-5928-11ed-9637-8f6b1fb7beeb",
       "image_id": "image3",
       "category_id": 1,
+      "confidence": 0.953,
+      "isempty": false,
       "bbox": [
         305.9852,
         902.8941,
@@ -54,9 +60,11 @@
       ]
     },
     {
-      "id": "283d9a8b-4778-11ed-8c6d-25b4a4866b7f",
+      "id": "465dc23b-5928-11ed-9637-8f6b1fb7beeb",
       "image_id": "image1",
       "category_id": 1,
+      "confidence": 0.0068,
+      "isempty": false,
       "bbox": [
         578.8235999999999,
         351.9711,
@@ -65,9 +73,11 @@
       ]
     },
     {
-      "id": "283d9a8c-4778-11ed-8c6d-25b4a4866b7f",
+      "id": "465dc23c-5928-11ed-9637-8f6b1fb7beeb",
       "image_id": "image1",
       "category_id": 1,
+      "confidence": 0.978,
+      "isempty": false,
       "bbox": [
         203.86239999999998,
         38.99565,
@@ -76,9 +86,11 @@
       ]
     },
     {
-      "id": "283d9a8d-4778-11ed-8c6d-25b4a4866b7f",
+      "id": "465dc23d-5928-11ed-9637-8f6b1fb7beeb",
       "image_id": "image2",
       "category_id": 1,
+      "confidence": 0.0559,
+      "isempty": false,
       "bbox": [
         271.8804,
         951.9249,
@@ -87,9 +99,11 @@
       ]
     },
     {
-      "id": "283d9a8e-4778-11ed-8c6d-25b4a4866b7f",
+      "id": "465dc23e-5928-11ed-9637-8f6b1fb7beeb",
       "image_id": "image2",
       "category_id": 1,
+      "confidence": 0.872,
+      "isempty": false,
       "bbox": [
         275.904,
         697.8807,
