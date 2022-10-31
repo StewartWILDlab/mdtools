@@ -23,3 +23,13 @@ Options:
   -ol, --output-json-ls TEXT
   --help                        Show this message and exit.
 ```
+
+#### Command: readexif
+
+```
+Usage: mdtools readexif [OPTIONS] MD_JSON
+
+Options:
+  -ws, --write-csv BOOLEAN  [default: True]
+  --help                    Show this message and exit.
+```
