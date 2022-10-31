@@ -82,7 +82,7 @@ def convert(
 @click.argument("md_json", type=click.Path(exists=True))
 @click.option("-ws", "--write-csv", help="", default=True, show_default=True)
 def readexif(
-    md_json
+    md_json,
     write_csv
 ):
-    mdc.read_exif_from_md(md_json, tags='all', write=write_csv):
+    mdc.read_exif_from_md(md_json, tags='all', write=write_csv)
