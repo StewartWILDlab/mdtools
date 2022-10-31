@@ -6,7 +6,7 @@ authors = ["Valentin <valentin.lucet@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "*"
+python = "^3.10"
 Pillow = "9.0.1"
 tqdm = "^4.64.1"
 label-studio-converter = "^0.0.44"
@@ -15,6 +15,7 @@ pandas = "^1.5.1"
 matplotlib = "^3.6.1"
 numpy = "^1.23.4"
 PyExifTool = "^0.5.4"
+ExifRead = "^3.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.1.3"
