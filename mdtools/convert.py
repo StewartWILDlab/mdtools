@@ -318,6 +318,7 @@ def md_to_ls(
     )
     return ls
 
+# TODO review tags info
 
 def md_to_csv(md_json, read_exif=True, write=True):
     """Convert md_json to CSV format
