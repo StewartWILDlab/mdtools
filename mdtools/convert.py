@@ -319,7 +319,7 @@ def md_to_ls(
     return ls
 
 
-def md_to_csv(md_json, read_exif=False, write=True):
+def md_to_csv(md_json, read_exif=True, write=True):
     """Convert md_json to CSV format
 
     Extract information from the md_json.
