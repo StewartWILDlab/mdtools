@@ -16,6 +16,7 @@ def read_exif_from_md(md_json, tags='all', write=True):
     """
     # TODO fix the tags handling
     the_tags = ["File:FileName", "File:Directory",
+                "MakerNotes:Sequence", "MakerNotes:EventNumber",
                 "EXIF:DateTimeOriginal", "MakerNotes:DateTimeOriginal",
                 "MakerNotes:DayOfWeek", "MakerNotes:MoonPhase",
                 "MakerNotes:AmbientTemperature", "MakerNotes:MotionSensitivity",
@@ -50,7 +51,7 @@ def read_exif_from_md(md_json, tags='all', write=True):
 
     if write:
         name_out = os.path.join(os.path.dirname(
-            md_json), folder) + "_exif_output.csv"
+            md_json), folder) + "_exif.csv"
         full_data.to_csv(name_out)
 
     return full_data
