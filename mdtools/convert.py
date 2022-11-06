@@ -6,7 +6,6 @@ import pandas as pd
 
 from tqdm import tqdm
 from PIL import Image
-from collections import defaultdict
 
 from label_studio_converter.imports.label_config import generate_label_config
 from label_studio_converter.imports.coco import create_bbox
