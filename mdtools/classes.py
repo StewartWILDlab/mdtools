@@ -1,6 +1,8 @@
 import os
 import json
 
+# TODO Maybe class SurveyGroup?
+
 
 class CTSurvey:
     def __init__(self, root, results=[]):
