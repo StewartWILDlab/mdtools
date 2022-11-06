@@ -10,7 +10,7 @@ class CTSurvey:
 
         self.root = root
         self.results = results
-        
+
     def __repr__(self):
         return f"CT Survey with root '{self.root}' and {len(self.results)} results"
 
@@ -36,13 +36,20 @@ class MDResult:
         if not os.path.isdir(root):
             raise Exception("Result root must be a directory.")
 
+        # Provided
         self.root = root
         self.folder = folder
         self.file = file
 
+        # Created
+        self.filepath = os.path.join(self.root, self.file)
+        with open(self.filepath, "r") as f:
+            data = f.read()
+        self.data = json.loads(data)
+
         # Property
         self._format = "json"
-        
+
     def __repr__(self):
         return f"MD Result with root '{self.root}', folder '{self.folder}', and file '{self.file}' "
 
