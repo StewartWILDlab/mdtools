@@ -173,6 +173,8 @@ def coco_ct_to_ls(
     out_type="predictions",
     generate_config_file=False,
     write=True,
+    use_score_table=False,
+    score_table=""
 ):
     """Convert COCO CT labeling to Label Studio JSON
 
@@ -222,6 +224,17 @@ def coco_ct_to_ls(
     bbox_once = False
     rectangles_from_name = from_name + "_rectangles"
     tags = {}
+    
+    if use_score_table:
+        print("Reading score table")
+        score_table = (pd.read_csv(score_table)
+                       .loc[:, ["file", "MakerNotes:Sequence", "MakerNotes:EventNumber"]]
+                       .drop_duplicates())
+        print("Score table read")
+        
+        for key in tqdm(images.keys()):
+            images[key]["sequence_id"] = int(score_table[score_table.file == images[key]["file_name"]]['MakerNotes:Sequence'].iloc[0][0])
+            images[key]["sequence_nb"] = score_table[score_table.file == images[key]["file_name"]]['MakerNotes:EventNumber'].iloc[0]
 
     for i, annotation in enumerate(tqdm(coco["annotations"])):
 
@@ -252,7 +265,11 @@ def coco_ct_to_ls(
                     task = tasks[image_id]
                 else:
                     task = new_task(out_type, image_root_url, image_file_name)
-                    task[out_type][0]["score"] = 0
+                    task[out_type][0]["score"] = annotation["max_confidence"]
+                    # if use_score_table:
+                    #      pass   # TODO IMPLEMENT READING SCORE TABLE
+                    # else:
+                    #     
 
                 if "bbox" in annotation:
                     item = create_bbox(
@@ -266,8 +283,12 @@ def coco_ct_to_ls(
                     # Replace item id with id created in the first step
                     item["id"] = annotation["id"]
                     task[out_type][0]["result"].append(item)
-                    if float(annotation_conf) > float(task[out_type][0]["score"]):
-                        task[out_type][0]["score"] = annotation_conf
+                    
+                    # if use_score_table:
+                    #      pass   # TODO IMPLEMENT READING SCORE TABLE
+                    # else:
+                    #     if float(annotation_conf) > float(task[out_type][0]["score"]):
+                    #         task[out_type][0]["score"] = annotation_conf
 
                 tasks[image_id] = task
 
@@ -303,6 +324,8 @@ def md_to_ls(
     output_json_coco=None,
     write_ls=False,
     output_json_ls=None,
+    use_score_table=False,
+    score_table=""
 ):
 
     if not isinstance(output_json_coco, str):
@@ -314,7 +337,8 @@ def md_to_ls(
     coco_ct = md_to_coco_ct(md_json, output_json_coco,
                             image_base_dir, write=write_coco)
     ls = coco_ct_to_ls(
-        coco_ct, output_json_ls, conf_threshold, image_root_url, write=write_ls
+        coco_ct, output_json_ls, conf_threshold, image_root_url, write=write_ls,
+        use_score_table=use_score_table, score_table=score_table
     )
     return ls
 
