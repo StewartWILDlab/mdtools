@@ -107,6 +107,7 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
                     ann["image_id"] = im["id"]
                     ann["category_id"] = category_id
                     ann["confidence"] = detection["conf"]
+                    ann["max_confidence"] = entry["max_detection_conf"]
                     ann["isempty"] = False
 
                     if category_id != 0:
