@@ -202,7 +202,7 @@ def coco_ct_to_ls(
     # build categories => labels dict
     new_categories = {}
     # list to dict conversion: [...] => {category_id: category_item}
-    categories = {int(category["id"]): category for category in coco["categories"]}
+    categories = {int(category["id"])                  : category for category in coco["categories"]}
     ids = sorted(categories.keys())  # sort labels by their origin ids
 
     for i in ids:
@@ -224,24 +224,43 @@ def coco_ct_to_ls(
     bbox_once = False
     rectangles_from_name = from_name + "_rectangles"
     tags = {}
-    
+
     if use_score_table:
         print("Reading score table")
         score_table = (pd.read_csv(score_table)
-                       .loc[:, ["file", "MakerNotes:Sequence", "MakerNotes:EventNumber"]]
-                       .drop_duplicates())
+                       .loc[:, ["file", "conf", "File:Directory", "MakerNotes:Sequence", "MakerNotes:EventNumber"]])
+        score_table_unique = score_table.drop_duplicates()
         print("Score table read")
-        
+
         for key in tqdm(images.keys()):
-            images[key]["sequence_id"] = int(score_table[score_table.file == images[key]["file_name"]]['MakerNotes:Sequence'].iloc[0][0])
-            images[key]["sequence_nb"] = score_table[score_table.file == images[key]["file_name"]]['MakerNotes:EventNumber'].iloc[0]
 
-    for i, annotation in enumerate(tqdm(coco["annotations"])):
+            # images[key]["sequence_id"] = score_table_unique[score_table_unique.file == images[key]["file_name"]]['MakerNotes:Sequence'].iloc[0][0]
+            images[key]["sequence_nb"] = score_table_unique[score_table_unique.file ==
+                                                            images[key]["file_name"]]['MakerNotes:EventNumber'].iloc[0]
+            images[key]["dir"] = score_table_unique[score_table_unique.file ==
+                                                    images[key]["file_name"]]['File:Directory'].iloc[0]
 
-        if annotation["isempty"]:
-            next
+            image_seq_number = images[key]["sequence_nb"]
+            image_dir = images[key]["dir"]
+            subset = score_table.query(
+                f"`MakerNotes:EventNumber` == {image_seq_number} and `File:Directory` == '{image_dir}' and `MakerNotes:Sequence` != '0 0'")
 
-        else:
+            if subset.shape[0] == 0:
+                images[key]["max_sequence_conf"] = 0
+
+            else:
+
+                assert subset["file"].drop_duplicates().shape[0] <= 5
+                images[key]["max_sequence_conf"] = max(subset["conf"])
+
+        for i, annotation in enumerate(tqdm(coco["annotations"])):
+
+            image_id = annotation["image_id"]
+            image = images[image_id]
+
+            # annotation_conf = annotation["confidence"]
+            image_conf = image["max_sequence_conf"]
+
             bbox |= "bbox" in annotation
 
             if bbox and not bbox_once:
@@ -249,27 +268,21 @@ def coco_ct_to_ls(
                 bbox_once = True
 
             # read image sizes & detection confidence
-            image_id = annotation["image_id"]
-            image = images[image_id]
+
             image_file_name, image_width, image_height = (
                 image["file_name"],
                 image["width"],
                 image["height"],
             )
-            annotation_conf = annotation["confidence"]
 
-            if float(annotation_conf) >= float(conf_threshold):
+            if image_conf >= float(conf_threshold):
 
                 # get or create new task
                 if image_id in tasks:
                     task = tasks[image_id]
                 else:
                     task = new_task(out_type, image_root_url, image_file_name)
-                    task[out_type][0]["score"] = annotation["max_confidence"]
-                    # if use_score_table:
-                    #      pass   # TODO IMPLEMENT READING SCORE TABLE
-                    # else:
-                    #     
+                    task[out_type][0]["score"] = image_conf
 
                 if "bbox" in annotation:
                     item = create_bbox(
@@ -283,15 +296,11 @@ def coco_ct_to_ls(
                     # Replace item id with id created in the first step
                     item["id"] = annotation["id"]
                     task[out_type][0]["result"].append(item)
-                    
-                    # if use_score_table:
-                    #      pass   # TODO IMPLEMENT READING SCORE TABLE
-                    # else:
-                    #     if float(annotation_conf) > float(task[out_type][0]["score"]):
-                    #         task[out_type][0]["score"] = annotation_conf
 
                 tasks[image_id] = task
 
+    else:
+        raise Exception("Score table must be used.")
     # generate and save labeling config
     if generate_config_file:
         label_config_file = output_json.replace(
@@ -343,6 +352,7 @@ def md_to_ls(
     return ls
 
 # TODO review tags info
+
 
 def md_to_csv(md_json, read_exif=True, write=True):
     """Convert md_json to CSV format
