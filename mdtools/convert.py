@@ -202,7 +202,8 @@ def coco_ct_to_ls(
     # build categories => labels dict
     new_categories = {}
     # list to dict conversion: [...] => {category_id: category_item}
-    categories = {int(category["id"])                  : category for category in coco["categories"]}
+    categories = {int(category["id"])
+                      : category for category in coco["categories"]}
     ids = sorted(categories.keys())  # sort labels by their origin ids
 
     for i in ids:
@@ -234,22 +235,29 @@ def coco_ct_to_ls(
 
         for key in tqdm(images.keys()):
 
-            # images[key]["sequence_id"] = score_table_unique[score_table_unique.file == images[key]["file_name"]]['MakerNotes:Sequence'].iloc[0][0]
-            images[key]["sequence_nb"] = score_table_unique[score_table_unique.file ==
-                                                            images[key]["file_name"]]['MakerNotes:EventNumber'].iloc[0]
-            images[key]["dir"] = score_table_unique[score_table_unique.file ==
-                                                    images[key]["file_name"]]['File:Directory'].iloc[0]
+            # if key == "P028-1_WLU-10_DCIM_100RECNX_RCNX0232":
+            #     print("*****")
+            #     print(key)
+            #     print(score_table_unique[score_table_unique.file == images[key]["file_name"]])
+            #     print("*****")
+                
+            images[key]["sequence_id"] = score_table_unique[score_table_unique.file == images[key]["file_name"]]['MakerNotes:Sequence'].iloc[0]
+            images[key]["sequence_nb"] = score_table_unique[score_table_unique.file == images[key]["file_name"]]['MakerNotes:EventNumber'].iloc[0]
+            images[key]["dir"] = score_table_unique[score_table_unique.file == images[key]["file_name"]]['File:Directory'].iloc[0]
 
+            image_seq_id = images[key]["sequence_id"]
             image_seq_number = images[key]["sequence_nb"]
             image_dir = images[key]["dir"]
-            subset = score_table.query(
-                f"`MakerNotes:EventNumber` == {image_seq_number} and `File:Directory` == '{image_dir}' and `MakerNotes:Sequence` != '0 0'")
+            
+            if image_seq_id == '0 0':
+                subset = score_table_unique[score_table_unique.file == images[key]["file_name"]]
+            else: 
+                subset = score_table.query(
+                    f"`MakerNotes:EventNumber` == {image_seq_number} and `File:Directory` == '{image_dir}' and `MakerNotes:Sequence` != '0 0'")
 
             if subset.shape[0] == 0:
                 images[key]["max_sequence_conf"] = 0
-
             else:
-
                 assert subset["file"].drop_duplicates().shape[0] <= 5
                 images[key]["max_sequence_conf"] = max(subset["conf"])
 
@@ -258,7 +266,6 @@ def coco_ct_to_ls(
             image_id = annotation["image_id"]
             image = images[image_id]
 
-            # annotation_conf = annotation["confidence"]
             image_conf = image["max_sequence_conf"]
 
             bbox |= "bbox" in annotation
@@ -284,18 +291,24 @@ def coco_ct_to_ls(
                     task = new_task(out_type, image_root_url, image_file_name)
                     task[out_type][0]["score"] = image_conf
 
-                if "bbox" in annotation:
-                    item = create_bbox(
-                        annotation,
-                        categories,
-                        rectangles_from_name,
-                        image_height,
-                        image_width,
-                        to_name,
-                    )
-                    # Replace item id with id created in the first step
-                    item["id"] = annotation["id"]
-                    task[out_type][0]["result"].append(item)
+                if "confidence" in annotation:
+
+                    annotation_conf = annotation["confidence"]
+
+                    if annotation_conf > float(conf_threshold):
+
+                        if "bbox" in annotation:
+                            item = create_bbox(
+                                annotation,
+                                categories,
+                                rectangles_from_name,
+                                image_height,
+                                image_width,
+                                to_name,
+                            )
+                            # Replace item id with id created in the first step
+                            item["id"] = annotation["id"]
+                            task[out_type][0]["result"].append(item)
 
                 tasks[image_id] = task
 
@@ -393,19 +406,19 @@ def md_to_csv(md_json, read_exif=True, write=True):
                 )
 
                 if read_exif:
-                    filename = os.path.join(
+                    filename=os.path.join(
                         md_json.split("_")[0], image["file"])
 
                     with exiftool.ExifToolHelper() as et:
-                        tags = et.get_tags(filename, the_tags)[0]
+                        tags=et.get_tags(filename, the_tags)[0]
 
-                    tags_df = pd.json_normalize(tags)
-                    tags_df["file"] = image["file"]
-                    dat = pd.merge(dat, tags_df, how="left", on="file")
+                    tags_df=pd.json_normalize(tags)
+                    tags_df["file"]=image["file"]
+                    dat=pd.merge(dat, tags_df, how="left", on="file")
 
             else:
 
-                dat = (pd.DataFrame({"category": [0]})
+                dat=(pd.DataFrame({"category": [0]})
                        .assign(conf='NA')
                        .assign(bbox='NA')
                        .assign(file=image["file"])
@@ -413,23 +426,23 @@ def md_to_csv(md_json, read_exif=True, write=True):
                        )
 
                 if read_exif:
-                    filename = os.path.join(
+                    filename=os.path.join(
                         md_json.split("_")[0], image["file"])
 
                     with exiftool.ExifToolHelper() as et:
-                        tags = et.get_tags(filename, the_tags)[0]
+                        tags=et.get_tags(filename, the_tags)[0]
 
-                    tags_df = pd.json_normalize(tags)
-                    tags_df["file"] = image["file"]
-                    dat = pd.merge(dat, tags_df, how="left", on="file")
+                    tags_df=pd.json_normalize(tags)
+                    tags_df["file"]=image["file"]
+                    dat=pd.merge(dat, tags_df, how="left", on="file")
 
-            full_data = pd.concat([full_data, dat])
+            full_data=pd.concat([full_data, dat])
 
         else:
             print("Error on file %s" % image["file"])
 
     if write:
-        name_out = os.path.join(os.path.dirname(
+        name_out=os.path.join(os.path.dirname(
             md_json), folder) + "_output.csv"
         full_data.to_csv(name_out)
 
