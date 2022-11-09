@@ -9,7 +9,9 @@ def clean_csv_output(ls_csv, out_file, data_str="data/local-files/?d=", write=Tr
     assert "image" in dat.keys()
     assert "label_rectangles" in dat.keys()
 
-    dat["SourceFile"] = [val.replace(data_str, "") for val in dat["image"]]
+    dat["SourceFile"] = [
+        "/media/vlucet/TrailCamST/" + val.replace(data_str, "") for val in dat["image"]
+    ]
     dat["label_rectangles"] = [
         ast.literal_eval(val)[0] if isinstance(val, str) else {}
         for val in dat["label_rectangles"]
@@ -34,7 +36,7 @@ def clean_csv_output(ls_csv, out_file, data_str="data/local-files/?d=", write=Tr
     ]
 
     dat["pred"] = [
-        val["rectanglelabels"][0] if val else "" for val in dat["label_rectangles"]
+        val["rectanglelabels"][0] if val else "empty" for val in dat["label_rectangles"]
     ]
 
     if write:
@@ -44,13 +46,16 @@ def clean_csv_output(ls_csv, out_file, data_str="data/local-files/?d=", write=Tr
 
 
 def join_ls_to_csv(csv_file, ls_file, join_file, write=True, by="SourceFile"):
+
+    # TODO careful, this is duplication of code in join and should be changed
+
     csv = pd.read_csv(csv_file)
     csv["SourceFile"] = (
         "/media/vlucet/TrailCamST/TrailCamStorage/" + csv["folder"] + "/" + csv["file"]
     )
-    exif = pd.read_csv(exif_file)
+    ls = pd.read_csv(ls_file)
 
-    joined = pd.merge(csv, exif, how="left", on=by)
+    joined = pd.merge(csv, ls, how="left", on=by)
     if write:
         joined.to_csv(join_file)
 
