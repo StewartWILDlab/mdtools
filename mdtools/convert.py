@@ -69,8 +69,7 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
         im["id"] = image_id
         im["file_name"] = image_relative_path
 
-        pil_image = Image.open(os.path.join(
-            image_base_dir, image_relative_path))
+        pil_image = Image.open(os.path.join(image_base_dir, image_relative_path))
         width, height = pil_image.size
         im["width"] = width
         im["height"] = height
@@ -174,7 +173,7 @@ def coco_ct_to_ls(
     generate_config_file=False,
     write=True,
     use_score_table=False,
-    score_table=""
+    score_table="",
 ):
     """Convert COCO CT labeling to Label Studio JSON
 
@@ -202,8 +201,7 @@ def coco_ct_to_ls(
     # build categories => labels dict
     new_categories = {}
     # list to dict conversion: [...] => {category_id: category_item}
-    categories = {int(category["id"])
-                      : category for category in coco["categories"]}
+    categories = {int(category["id"]): category for category in coco["categories"]}
     ids = sorted(categories.keys())  # sort labels by their origin ids
 
     for i in ids:
@@ -228,8 +226,16 @@ def coco_ct_to_ls(
 
     if use_score_table:
         print("Reading score table")
-        score_table = (pd.read_csv(score_table)
-                       .loc[:, ["file", "conf", "File:Directory", "MakerNotes:Sequence", "MakerNotes:EventNumber"]])
+        score_table = pd.read_csv(score_table).loc[
+            :,
+            [
+                "file",
+                "conf",
+                "File:Directory",
+                "MakerNotes:Sequence",
+                "MakerNotes:EventNumber",
+            ],
+        ]
         score_table_unique = score_table.drop_duplicates()
         print("Score table read")
 
@@ -240,20 +246,29 @@ def coco_ct_to_ls(
             #     print(key)
             #     print(score_table_unique[score_table_unique.file == images[key]["file_name"]])
             #     print("*****")
-                
-            images[key]["sequence_id"] = score_table_unique[score_table_unique.file == images[key]["file_name"]]['MakerNotes:Sequence'].iloc[0]
-            images[key]["sequence_nb"] = score_table_unique[score_table_unique.file == images[key]["file_name"]]['MakerNotes:EventNumber'].iloc[0]
-            images[key]["dir"] = score_table_unique[score_table_unique.file == images[key]["file_name"]]['File:Directory'].iloc[0]
+
+            images[key]["sequence_id"] = score_table_unique[
+                score_table_unique.file == images[key]["file_name"]
+            ]["MakerNotes:Sequence"].iloc[0]
+            images[key]["sequence_nb"] = score_table_unique[
+                score_table_unique.file == images[key]["file_name"]
+            ]["MakerNotes:EventNumber"].iloc[0]
+            images[key]["dir"] = score_table_unique[
+                score_table_unique.file == images[key]["file_name"]
+            ]["File:Directory"].iloc[0]
 
             image_seq_id = images[key]["sequence_id"]
             image_seq_number = images[key]["sequence_nb"]
             image_dir = images[key]["dir"]
-            
-            if image_seq_id == '0 0':
-                subset = score_table_unique[score_table_unique.file == images[key]["file_name"]]
-            else: 
+
+            if image_seq_id == "0 0":
+                subset = score_table_unique[
+                    score_table_unique.file == images[key]["file_name"]
+                ]
+            else:
                 subset = score_table.query(
-                    f"`MakerNotes:EventNumber` == {image_seq_number} and `File:Directory` == '{image_dir}' and `MakerNotes:Sequence` != '0 0'")
+                    f"`MakerNotes:EventNumber` == {image_seq_number} and `File:Directory` == '{image_dir}' and `MakerNotes:Sequence` != '0 0'"
+                )
 
             if subset.shape[0] == 0:
                 images[key]["max_sequence_conf"] = 0
@@ -316,19 +331,16 @@ def coco_ct_to_ls(
         raise Exception("Score table must be used.")
     # generate and save labeling config
     if generate_config_file:
-        label_config_file = output_json.replace(
-            ".json", "") + ".label_config.xml"
+        label_config_file = output_json.replace(".json", "") + ".label_config.xml"
         print(f"Saving Label Studio XML to {label_config_file}")
-        generate_label_config(categories, tags, to_name,
-                              from_name, label_config_file)
+        generate_label_config(categories, tags, to_name, from_name, label_config_file)
 
     if len(tasks) > 0:
         tasks = [tasks[key] for key in sorted(tasks.keys())]
         task_len = len(tasks)
 
         if write:
-            print(
-                f"Saving {task_len} tasks to Label Studio JSON file {output_json}")
+            print(f"Saving {task_len} tasks to Label Studio JSON file {output_json}")
             with open(output_json, "w") as out:
                 json.dump(tasks, out)
 
@@ -347,7 +359,7 @@ def md_to_ls(
     write_ls=False,
     output_json_ls=None,
     use_score_table=False,
-    score_table=""
+    score_table="",
 ):
 
     if not isinstance(output_json_coco, str):
@@ -356,13 +368,18 @@ def md_to_ls(
     if not isinstance(output_json_ls, str):
         output_json_ls = os.path.splitext(md_json)[0] + "_ls.json"
 
-    coco_ct = md_to_coco_ct(md_json, output_json_coco,
-                            image_base_dir, write=write_coco)
+    coco_ct = md_to_coco_ct(md_json, output_json_coco, image_base_dir, write=write_coco)
     ls = coco_ct_to_ls(
-        coco_ct, output_json_ls, conf_threshold, image_root_url, write=write_ls,
-        use_score_table=use_score_table, score_table=score_table
+        coco_ct,
+        output_json_ls,
+        conf_threshold,
+        image_root_url,
+        write=write_ls,
+        use_score_table=use_score_table,
+        score_table=score_table,
     )
     return ls
+
 
 # TODO review tags info
 
@@ -374,12 +391,19 @@ def md_to_csv(md_json, read_exif=True, write=True):
 
     """
 
-    the_tags = ["File:FileName", "File:Directory",
-                "EXIF:DateTimeOriginal", "MakerNotes:DateTimeOriginal",
-                "MakerNotes:DayOfWeek", "MakerNotes:MoonPhase",
-                "MakerNotes:AmbientTemperature", "MakerNotes:MotionSensitivity",
-                "MakerNotes:BatteryVoltage", "MakerNotes:BatteryVoltageAvg",
-                "MakerNotes:UserLabel"]
+    the_tags = [
+        "File:FileName",
+        "File:Directory",
+        "EXIF:DateTimeOriginal",
+        "MakerNotes:DateTimeOriginal",
+        "MakerNotes:DayOfWeek",
+        "MakerNotes:MoonPhase",
+        "MakerNotes:AmbientTemperature",
+        "MakerNotes:MotionSensitivity",
+        "MakerNotes:BatteryVoltage",
+        "MakerNotes:BatteryVoltageAvg",
+        "MakerNotes:UserLabel",
+    ]
 
     with open(md_json, "r") as f:
         md = json.loads(f.read())
@@ -406,44 +430,42 @@ def md_to_csv(md_json, read_exif=True, write=True):
                 )
 
                 if read_exif:
-                    filename=os.path.join(
-                        md_json.split("_")[0], image["file"])
+                    filename = os.path.join(md_json.split("_")[0], image["file"])
 
                     with exiftool.ExifToolHelper() as et:
-                        tags=et.get_tags(filename, the_tags)[0]
+                        tags = et.get_tags(filename, the_tags)[0]
 
-                    tags_df=pd.json_normalize(tags)
-                    tags_df["file"]=image["file"]
-                    dat=pd.merge(dat, tags_df, how="left", on="file")
+                    tags_df = pd.json_normalize(tags)
+                    tags_df["file"] = image["file"]
+                    dat = pd.merge(dat, tags_df, how="left", on="file")
 
             else:
 
-                dat=(pd.DataFrame({"category": [0]})
-                       .assign(conf='NA')
-                       .assign(bbox='NA')
-                       .assign(file=image["file"])
-                       .assign(folder=folder)
-                       )
+                dat = (
+                    pd.DataFrame({"category": [0]})
+                    .assign(conf="NA")
+                    .assign(bbox="NA")
+                    .assign(file=image["file"])
+                    .assign(folder=folder)
+                )
 
                 if read_exif:
-                    filename=os.path.join(
-                        md_json.split("_")[0], image["file"])
+                    filename = os.path.join(md_json.split("_")[0], image["file"])
 
                     with exiftool.ExifToolHelper() as et:
-                        tags=et.get_tags(filename, the_tags)[0]
+                        tags = et.get_tags(filename, the_tags)[0]
 
-                    tags_df=pd.json_normalize(tags)
-                    tags_df["file"]=image["file"]
-                    dat=pd.merge(dat, tags_df, how="left", on="file")
+                    tags_df = pd.json_normalize(tags)
+                    tags_df["file"] = image["file"]
+                    dat = pd.merge(dat, tags_df, how="left", on="file")
 
-            full_data=pd.concat([full_data, dat])
+            full_data = pd.concat([full_data, dat])
 
         else:
             print("Error on file %s" % image["file"])
 
     if write:
-        name_out=os.path.join(os.path.dirname(
-            md_json), folder) + "_output.csv"
+        name_out = os.path.join(os.path.dirname(md_json), folder) + "_output.csv"
         full_data.to_csv(name_out)
 
     return full_data

@@ -18,18 +18,22 @@ class CTSurvey:
 
     def load_from_folder_names(self, pattern):
 
-        folders_paths = [f.path for f in os.scandir(self.root)
-                         if f.is_dir()]
-        results_paths = [(f + pattern) for f in folders_paths if
-                         os.path.isfile(f + pattern)]
+        folders_paths = [f.path for f in os.scandir(self.root) if f.is_dir()]
+        results_paths = [
+            (f + pattern) for f in folders_paths if os.path.isfile(f + pattern)
+        ]
 
         if len(results_paths) == 0:
             raise Exception("Not result files found.")
         else:
-            results_files = [os.path.basename(f_path)
-                             for f_path in results_paths]
-            self.results = list(map(lambda x, y: MDResult(self.root, os.path.basename(x), y),
-                                    folders_paths, results_files))
+            results_files = [os.path.basename(f_path) for f_path in results_paths]
+            self.results = list(
+                map(
+                    lambda x, y: MDResult(self.root, os.path.basename(x), y),
+                    folders_paths,
+                    results_files,
+                )
+            )
 
 
 class MDResult:
