@@ -130,3 +130,7 @@ dmypy.json
 
 # Testing
 tests/test_images/*.png
+
+# Sublime
+mdtools.sublime-project
+mdtools.sublime-workspace
