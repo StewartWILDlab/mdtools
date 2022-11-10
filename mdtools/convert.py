@@ -385,11 +385,11 @@ def md_to_ls(
 
 
 def md_to_csv(md_json, read_exif=True, write=True):
-    """Convert md_json to CSV format
+"""Convert md_json to CSV format.
 
-    Extract information from the md_json.
+Extract information from the md_json.
 
-    """
+"""
 
     the_tags = [
         "File:FileName",
@@ -422,6 +422,7 @@ def md_to_csv(md_json, read_exif=True, write=True):
                     pd.json_normalize(image["detections"])
                     .assign(file=image["file"])
                     .assign(folder=folder)
+                    .assign(source_file=os.path.join(folder, image["file"]))
                     .assign(
                         category=lambda df: df["category"].map(
                             lambda category: int(category)
@@ -447,6 +448,7 @@ def md_to_csv(md_json, read_exif=True, write=True):
                     .assign(bbox="NA")
                     .assign(file=image["file"])
                     .assign(folder=folder)
+                    .assign(source_file=os.path.join(folder, image["file"]))
                 )
 
                 if read_exif:
@@ -466,6 +468,6 @@ def md_to_csv(md_json, read_exif=True, write=True):
 
     if write:
         name_out = os.path.join(os.path.dirname(md_json), folder) + "_output.csv"
-        full_data.to_csv(name_out)
+        full_data.to_csv(name_out, index=False)
 
     return full_data
