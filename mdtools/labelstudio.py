@@ -1,5 +1,39 @@
+"""Labelstudio output management miodule.
+
+TODO.
+"""
+
 import pandas as pd
 import ast
+import json
+import os
+
+
+def post_process_annotations(ls_json):
+    
+    with open(ls_json, "r") as f:
+        data = f.read()
+    ls = json.loads(data)
+
+    for ann in ls[78:82]:
+
+        print(ann['id'])
+        # print(ann['annotations'])
+        print(ann['data'])
+
+        for bb in ann['annotations']:
+            pass
+
+            if bb['result']:
+                bb = pd.json_normalize(bb['result'])
+                print(bb)
+
+            else:
+                print("EMPTY")
+            #print(bb['id'])
+            #if ann_set['result']:
+            #print(bb['result'])
+    print(ls[0].keys())
 
 
 def clean_csv_output(ls_csv, out_file, data_str="data/local-files/?d=", write=True):
@@ -40,7 +74,7 @@ def clean_csv_output(ls_csv, out_file, data_str="data/local-files/?d=", write=Tr
     ]
 
     if write:
-        dat.to_csv(out_file)
+        dat.to_csv(out_file, index=False)
 
     return dat
 
@@ -57,6 +91,11 @@ def join_ls_to_csv(csv_file, ls_file, join_file, write=True, by="SourceFile"):
 
     joined = pd.merge(csv, ls, how="left", on=by)
     if write:
-        joined.to_csv(join_file)
+        joined.to_csv(join_file, index=False)
 
     return joined
+
+
+post_process_annotations(
+    os.path.join(os.getcwd(), "../../label_studio_downloads/P072.json")
+)
