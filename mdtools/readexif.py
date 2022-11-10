@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 
 def read_exif_from_md(md_json, tags="all", write=True):
-    """Convert md_json to CSV format
+    """Convert md_json to CSV format.
 
     Extract EXIF information from the md_json.
 
@@ -34,6 +34,7 @@ def read_exif_from_md(md_json, tags="all", write=True):
     with open(md_json, "r") as f:
         md = json.loads(f.read())
     folder = os.path.basename(md_json).split("_")[0]
+    root = os.path.dirname(md_json) + "/"
 
     full_data = pd.DataFrame()
     images = md["images"]
@@ -53,11 +54,16 @@ def read_exif_from_md(md_json, tags="all", write=True):
         with exiftool.ExifToolHelper() as et:
             tags = [et.get_tags(filename, the_tags)[0] for filename in filenames]
 
-        tags_df = pd.json_normalize(tags)
+        tags_df = (pd.json_normalize(tags)
+                   .assign(
+                        source_file=lambda df: df["SourceFile"].map(
+                            lambda SourceFile: SourceFile.replace(root, "")
+                        )
+                    ))
         full_data = pd.concat([full_data, tags_df])
 
     if write:
         name_out = os.path.join(os.path.dirname(md_json), folder) + "_exif.csv"
-        full_data.to_csv(name_out)
+        full_data.to_csv(name_out, index = False)
 
     return full_data
