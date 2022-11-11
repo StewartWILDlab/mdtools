@@ -1,6 +1,5 @@
 import os
 import json
-import uuid
 import exiftool
 import pandas as pd
 
@@ -81,7 +80,7 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
 
             if len(detections) >= 1:
                 # detection = detections[0]
-                for detection in detections:
+                for i, detection in enumerate(detections):
 
                     category_name = categories_this_dataset[detection["category"]]
                     category_name = category_name.strip().lower()
@@ -101,7 +100,7 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
 
                     # Create an annotation
                     ann = {}
-                    ann["id"] = str(uuid.uuid1())
+                    ann["id"] = im["id"] + "_" + str(i)
                     ann["image_id"] = im["id"]
                     ann["category_id"] = category_id
                     ann["confidence"] = detection["conf"]
@@ -123,7 +122,7 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
 
             else:
                 ann = {}
-                ann["id"] = str(uuid.uuid1())
+                ann["id"] = ann["id"] = im["id"] + "_1"
                 ann["image_id"] = im["id"]
                 ann["category_id"] = 0
                 ann["isempty"] = True

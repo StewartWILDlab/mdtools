@@ -105,6 +105,6 @@ def readexif(md_json, write_csv):
 @click.argument("exif_file", type=click.Path(exists=True))
 @click.argument("join_file", type=click.Path(exists=False))
 @click.option("-ws", "--write-csv", help="", default=True, show_default=True)
-@click.option("-b", "--by", help="", default="SourceFile", show_default=True)
+@click.option("-b", "--by", help="", default="source_file", show_default=True)
 def joinexif(csv_file, exif_file, join_file, write_csv, by):
     mdj.join_exif_to_csv(csv_file, exif_file, join_file, write=write_csv, by=by)
