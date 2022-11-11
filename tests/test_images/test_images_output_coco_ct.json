@@ -21,10 +21,11 @@
   ],
   "annotations": [
     {
-      "id": "465dc238-5928-11ed-9637-8f6b1fb7beeb",
+      "id": "image3_0",
       "image_id": "image3",
       "category_id": 1,
       "confidence": 0.0231,
+      "max_confidence": 0.953,
       "isempty": false,
       "bbox": [
         0.9999603999999999,
@@ -34,10 +35,11 @@
       ]
     },
     {
-      "id": "465dc239-5928-11ed-9637-8f6b1fb7beeb",
+      "id": "image3_1",
       "image_id": "image3",
       "category_id": 1,
       "confidence": 0.949,
+      "max_confidence": 0.953,
       "isempty": false,
       "bbox": [
         0,
@@ -47,10 +49,11 @@
       ]
     },
     {
-      "id": "465dc23a-5928-11ed-9637-8f6b1fb7beeb",
+      "id": "image3_2",
       "image_id": "image3",
       "category_id": 1,
       "confidence": 0.953,
+      "max_confidence": 0.953,
       "isempty": false,
       "bbox": [
         305.9852,
@@ -60,10 +63,11 @@
       ]
     },
     {
-      "id": "465dc23b-5928-11ed-9637-8f6b1fb7beeb",
+      "id": "image1_0",
       "image_id": "image1",
       "category_id": 1,
       "confidence": 0.0068,
+      "max_confidence": 0.978,
       "isempty": false,
       "bbox": [
         578.8235999999999,
@@ -73,10 +77,11 @@
       ]
     },
     {
-      "id": "465dc23c-5928-11ed-9637-8f6b1fb7beeb",
+      "id": "image1_1",
       "image_id": "image1",
       "category_id": 1,
       "confidence": 0.978,
+      "max_confidence": 0.978,
       "isempty": false,
       "bbox": [
         203.86239999999998,
@@ -86,10 +91,11 @@
       ]
     },
     {
-      "id": "465dc23d-5928-11ed-9637-8f6b1fb7beeb",
+      "id": "image2_0",
       "image_id": "image2",
       "category_id": 1,
       "confidence": 0.0559,
+      "max_confidence": 0.872,
       "isempty": false,
       "bbox": [
         271.8804,
@@ -99,10 +105,11 @@
       ]
     },
     {
-      "id": "465dc23e-5928-11ed-9637-8f6b1fb7beeb",
+      "id": "image2_1",
       "image_id": "image2",
       "category_id": 1,
       "confidence": 0.872,
+      "max_confidence": 0.872,
       "isempty": false,
       "bbox": [
         275.904,
