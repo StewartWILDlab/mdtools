@@ -122,7 +122,7 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
 
             else:
                 ann = {}
-                ann["id"] = im["id"] + "_1"
+                ann["id"] = im["id"] + "_0"
                 ann["image_id"] = im["id"]
                 ann["category_id"] = 0
                 ann["isempty"] = True
