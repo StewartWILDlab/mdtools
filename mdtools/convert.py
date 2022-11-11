@@ -246,34 +246,38 @@ def coco_ct_to_ls(
             #     print(score_table_unique[score_table_unique.file == images[key]["file_name"]])
             #     print("*****")
 
-            images[key]["sequence_id"] = score_table_unique[
-                score_table_unique.file == images[key]["file_name"]
-            ]["MakerNotes:Sequence"].iloc[0]
-            images[key]["sequence_nb"] = score_table_unique[
-                score_table_unique.file == images[key]["file_name"]
-            ]["MakerNotes:EventNumber"].iloc[0]
-            images[key]["dir"] = score_table_unique[
-                score_table_unique.file == images[key]["file_name"]
-            ]["File:Directory"].iloc[0]
+            filtered = score_table_unique[
+                score_table_unique.file == images[key]["file_name"]]
 
-            image_seq_id = images[key]["sequence_id"]
-            image_seq_number = images[key]["sequence_nb"]
-            image_dir = images[key]["dir"]
+            if filtered.shape[0] == 0:
+                
+                file_name = images[key]["file_name"]
+                print(f"skipping file {file_name}")
 
-            if image_seq_id == "0 0":
-                subset = score_table_unique[
-                    score_table_unique.file == images[key]["file_name"]
-                ]
             else:
-                subset = score_table.query(
-                    f"`MakerNotes:EventNumber` == {image_seq_number} and `File:Directory` == '{image_dir}' and `MakerNotes:Sequence` != '0 0'"
-                )
 
-            if subset.shape[0] == 0:
-                images[key]["max_sequence_conf"] = 0
-            else:
-                assert subset["file"].drop_duplicates().shape[0] <= 5
-                images[key]["max_sequence_conf"] = max(subset["conf"])
+                images[key]["sequence_id"] = filtered["MakerNotes:Sequence"].iloc[0]
+                images[key]["sequence_nb"] = filtered["MakerNotes:EventNumber"].iloc[0]
+                images[key]["dir"] = filtered["File:Directory"].iloc[0]
+
+                image_seq_id = images[key]["sequence_id"]
+                image_seq_number = images[key]["sequence_nb"]
+                image_dir = images[key]["dir"]
+
+                if image_seq_id == "0 0":
+                    subset = score_table_unique[
+                        score_table_unique.file == images[key]["file_name"]
+                    ]
+                else:
+                    subset = score_table.query(
+                        f"`MakerNotes:EventNumber` == {image_seq_number} and `File:Directory` == '{image_dir}' and `MakerNotes:Sequence` != '0 0'"
+                    )
+
+                if subset.shape[0] == 0:
+                    images[key]["max_sequence_conf"] = 0
+                else:
+                    assert subset["file"].drop_duplicates().shape[0] <= 5
+                    images[key]["max_sequence_conf"] = max(subset["conf"])
 
         for i, annotation in enumerate(tqdm(coco["annotations"])):
 
