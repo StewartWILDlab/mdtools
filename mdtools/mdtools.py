@@ -39,7 +39,7 @@ def mdtools():
 )
 @click.option("-wc", "--write-coco", help="", default=False, show_default=True)
 @click.option("-wl", "--write-ls", help="", default=True, show_default=True)
-@click.option("-re", "--read-exif", help="", default=True, show_default=True)
+@click.option("-re", "--read-exif", help="", default=False, show_default=True)
 @click.option("-ws", "--write-csv", help="", default=True, show_default=True)
 @click.option("-oc", "--output-json-coco", help="", default=None)
 @click.option("-ol", "--output-json-ls", help="", default=None)

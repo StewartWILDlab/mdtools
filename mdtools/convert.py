@@ -122,7 +122,7 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
 
             else:
                 ann = {}
-                ann["id"] = ann["id"] = im["id"] + "_1"
+                ann["id"] = im["id"] + "_1"
                 ann["image_id"] = im["id"]
                 ann["category_id"] = 0
                 ann["isempty"] = True
@@ -383,12 +383,10 @@ def md_to_ls(
 # TODO review tags info
 
 
-def md_to_csv(md_json, read_exif=True, write=True):
-"""Convert md_json to CSV format.
-
-Extract information from the md_json.
-
-"""
+def md_to_csv(md_json, read_exif=False, write=True):
+    """ Convert md to csv
+    
+    """
 
     the_tags = [
         "File:FileName",
@@ -470,3 +468,7 @@ Extract information from the md_json.
         full_data.to_csv(name_out, index=False)
 
     return full_data
+
+
+def coco_to_csv():
+    pass

@@ -132,6 +132,6 @@ def join_ls_to_csv(csv_file, ls_file, join_file, write=True, by="SourceFile"):
     return joined
 
 
-post_process_annotations(
-    os.path.join(os.getcwd(), "../label_studio_downloads/P072.json")
-)
+# post_process_annotations(
+#     os.path.join(os.getcwd(), "../label_studio_downloads/P072.json")
+# )
