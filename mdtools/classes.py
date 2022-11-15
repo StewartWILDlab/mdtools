@@ -1,12 +1,12 @@
 import os
 import json
 
-# TODO Maybe class SurveyGroup?
-
-
 class CTSurvey:
-    def __init__(self, root, results=[]):
+    """Megadetector survey class (wrap around a list of jsons)."""
 
+    def __init__(self, root, results=[]):
+        """Initialize the class."""
+        # Check if nor dir
         if not os.path.isdir(root):
             raise Exception("Survey root must be a directory.")
 
@@ -14,14 +14,13 @@ class CTSurvey:
         self.results = results
 
     def __repr__(self):
+        """Represent the class."""
         return f"CT Survey with root '{self.root}' and {len(self.results)} results"
 
     def load_from_folder_names(self, pattern):
-
+        """Load all the folders in a survey based on a file pattern."""
         folders_paths = [f.path for f in os.scandir(self.root) if f.is_dir()]
-        results_paths = [
-            (f + pattern) for f in folders_paths if os.path.isfile(f + pattern)
-        ]
+        results_paths = [(f + pattern) for f in folders_paths if os.path.isfile(f + pattern)]
 
         if len(results_paths) == 0:
             raise Exception("Not result files found.")
@@ -37,10 +36,16 @@ class CTSurvey:
 
 
 class MDResult:
-    def __init__(self, root, folder, file):
+    """Megadetector result class (wrap around a json)."""
 
+    def __init__(self, root, folder, file):
+        """Initialize the class."""        
+        # Check if dir
         if not os.path.isdir(root):
             raise Exception("Result root must be a directory.")
+
+        # Property
+        self._defaultcategories = {'1': 'animal', '2': 'person', '3': 'vehicle'}
 
         # Provided
         self.root = root
@@ -50,21 +55,27 @@ class MDResult:
         # Created
         self.filepath = os.path.join(self.root, self.file)
         with open(self.filepath, "r") as f:
-            data = f.read()
-        self.data = json.loads(data)
+            data = json.loads(f.read()) 
+        self.images = data["images"]  
+        self.categories = data["detection_categories"]
+        self.info = data["info"]
 
-        # Property
-        self._format = "json"
-
-    def __repr__(self):
-        return f"MD Result with root '{self.root}', folder '{self.folder}', and file '{self.file}' "
+        self.check_categories()
 
     @property
-    def format(self):
-        return self._format
+    def defaultcategories(self):
+        """Property default categories."""
+        return(self._defaultcategories)
 
-    def update_format(self, new_format):
-        self._format = new_format
+    def check_categories(self):
+        """Check whether the categories are valid."""
+        if not self.categories == self._defaultcategories:
+            raise Exception("Categories do not match megadetector defaults")
+    
+    def numimages(self):
+        """Compute number of images in the result."""
+        return len(self.images)
 
-    def convert(self):
-        pass
+    def __repr__(self):
+        """Represent the class."""
+        return f"MD Result with root '{self.root}', folder '{self.folder}', and file '{self.file}' "
