@@ -1,5 +1,8 @@
 import os
 import json
+from typing import Dict
+
+from click import IntRange
 
 class CTSurvey:
     """Megadetector survey class (wrap around a list of jsons)."""
@@ -13,7 +16,7 @@ class CTSurvey:
         self.root = root
         self.results = results
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Represent the class."""
         return f"CT Survey with root '{self.root}' and {len(self.results)} results"
 
@@ -63,19 +66,19 @@ class MDResult:
         self.check_categories()
 
     @property
-    def defaultcategories(self):
+    def defaultcategories(self) -> dict:
         """Property default categories."""
         return(self._defaultcategories)
 
-    def check_categories(self):
+    def check_categories(self) -> None:
         """Check whether the categories are valid."""
         if not self.categories == self._defaultcategories:
             raise Exception("Categories do not match megadetector defaults")
     
-    def numimages(self):
+    def numimages(self) -> int:
         """Compute number of images in the result."""
         return len(self.images)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Represent the class."""
         return f"MD Result with root '{self.root}', folder '{self.folder}', and file '{self.file}' "
