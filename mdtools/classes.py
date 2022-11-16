@@ -8,7 +8,7 @@ class MDResult:
     """Megadetector result class."""
 
     def __init__(self, root: str, folder: str, md_file: str):
-        """Initialize the class."""        
+        """Initialize the class."""
         # Check if dir
         if not os.path.isdir(root):
             raise Exception("Result root must be a directory.")
@@ -17,17 +17,19 @@ class MDResult:
         self.root: str = root
         self.folder: str = folder
         self.md_file: str = md_file
-        
+
         # Computed
         self.md_filepath: str = os.path.join(self.root, self.md_file)
-        
+
         # Properties
-        self._default_md_categories = {'1': 'animal', '2': 'person', '3': 'vehicle'}
+        self._default_md_categories = {'1': 'animal',
+                                       '2': 'person',
+                                       '3': 'vehicle'}
         # self._format: str="MD"
 
         # Created
         with open(self.md_filepath, "r") as f:
-            md_data = json.loads(f.read()) 
+            md_data = json.loads(f.read())
         self.md_data: dict = md_data
 
         # Check categories sanity
@@ -37,7 +39,7 @@ class MDResult:
     @property
     def default_md_categories(self) -> dict:
         """Property default categories."""
-        return(self._default_md_categories)
+        return self._default_md_categories
 
     # @property
     # def __format__(self) -> str:
@@ -53,7 +55,7 @@ class MDResult:
     def __repr__(self) -> str:
         """Represent the class."""
         return ("MD Results in MD format: \n" +
-        f"  * MD file @ '{self.md_filepath}'")
+                f"  * MD file @ '{self.md_filepath}'")
 
     # Data methods
     def md_images(self) -> dict:
@@ -76,11 +78,11 @@ class MDResult:
 class COCOResult(MDResult):
     """Megadetector coco class (wrap around a json)."""
 
-    def __init__(self, root: str, folder: str, md_file: str, 
-        coco_filepath: str, coco_data: dict={}):
+    def __init__(self, root: str, folder: str, md_file: str,
+                 coco_filepath: str, coco_data: dict = {}):
         """Initialize the class."""
-        super().__init__(root, folder, md_file)        
-        
+        super().__init__(root, folder, md_file)
+
         # Provided
         self.coco_file: str = os.path.basename(coco_filepath)
         self.coco_data: dict = coco_data
@@ -96,9 +98,9 @@ class COCOResult(MDResult):
     # Utils methods
     def __repr__(self) -> str:
         """Represent the class."""
-        rep =  ("MD Results in COCO format: \n" +
-        f" * MD file   @ '{self.md_filepath}' \n" +
-        f" * COCO file @ '{self.coco_filepath}'")
+        rep = ("MD Results in COCO format: \n" +
+               f" * MD file   @ '{self.md_filepath}' \n" +
+               f" * COCO file @ '{self.coco_filepath}'")
         return rep
 
     # Data methods
