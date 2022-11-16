@@ -1,3 +1,5 @@
+"""Read exif data related to a megadetector result."""
+
 import exiftool
 import json
 import os
@@ -5,17 +7,9 @@ import pandas as pd
 
 from tqdm import tqdm
 
-# TODO add batch size arg
+from mdtools.classes import MDResult
 
-
-def read_exif_from_md(md_json, tags="all", write=True):
-    """Convert md_json to CSV format.
-
-    Extract EXIF information from the md_json.
-
-    """
-    # TODO fix the tags handling
-    the_tags = [
+DEFAULT_TAGS = [
         "File:FileName",
         "File:Directory",
         "MakerNotes:Sequence",
@@ -31,20 +25,39 @@ def read_exif_from_md(md_json, tags="all", write=True):
         "MakerNotes:UserLabel",
     ]
 
-    with open(md_json, "r") as f:
-        md = json.loads(f.read())
-    folder = os.path.basename(md_json).split("_")[0]
-    root = os.path.dirname(md_json) + "/"
+# TODO add batch size arg
 
+def read_exif_from_md(md_result: MDResult or str, tags: list=DEFAULT_TAGS, 
+    batchsize: int=100, write: bool=True) -> pd.DataFrame:
+    """Extract EXIF information from the md_result.
+
+    Accepts string or MDResult object for now, will read the 
+    """
+    # Initialize the final data
     full_data = pd.DataFrame()
+
+    if isinstance(md_result, str):
+        
+        with open(md_result, "r") as f:
+            md = json.loads(f.read())
+        folder = os.path.basename(md_result).split("_")[0]
+        root = os.path.dirname(md_result) + "/"
+        base_path = md_result.split("_")[0]
+        name_out = os.path.join(os.path.dirname(md_result), folder) + "_exif.csv"
+    
+    elif isinstance(md_result, MDResult):
+        
+        md = md_result.data
+        folder = md_result.folder
+        root = md_result.root
+        base_path = md_result.root + md_result.folder
+        print(base_path)
+        name_out = base_path + "_exif.csv"
+        print(name_out)
+    
     images = md["images"]
-    images_names = [img["file"] for img in images]
     images_has_detect_key = ["detections" in img.keys() for img in images]
     images = [img for i, img in enumerate(images) if images_has_detect_key[i]]
-
-    # for image in tqdm(images):
-    batchsize = 10
-    base_path = md_json.split("_")[0]
 
     for i in tqdm(range(0, len(images), batchsize)):
         batch = images[i : i + batchsize]
@@ -52,9 +65,9 @@ def read_exif_from_md(md_json, tags="all", write=True):
         filenames = [os.path.join(base_path, img["file"]) for img in batch]
 
         with exiftool.ExifToolHelper() as et:
-            tags = [et.get_tags(filename, the_tags)[0] for filename in filenames]
+            tags_data = [et.get_tags(filename, tags)[0] for filename in filenames]
 
-        tags_df = (pd.json_normalize(tags)
+        tags_df = (pd.json_normalize(tags_data)
                    .assign(
                         source_file=lambda df: df["SourceFile"].map(
                             lambda SourceFile: SourceFile.replace(root, "")
@@ -63,7 +76,6 @@ def read_exif_from_md(md_json, tags="all", write=True):
         full_data = pd.concat([full_data, tags_df])
 
     if write:
-        name_out = os.path.join(os.path.dirname(md_json), folder) + "_exif.csv"
         full_data.to_csv(name_out, index = False)
 
     return full_data
