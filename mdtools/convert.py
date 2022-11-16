@@ -1,3 +1,5 @@
+"""Conversion of MD results to COCO and Label Studio Task json."""
+
 import os
 import json
 import exiftool
@@ -10,16 +12,22 @@ from label_studio_converter.imports.label_config import generate_label_config
 from label_studio_converter.imports.coco import create_bbox
 from label_studio_converter.imports.coco import new_task
 
+from mdtools.classes import COCOResult, MDResult
+from mdtools.cocoutils import create_coco_info_dict
+
 # TODO Add info + license dict argument
 
+def md_to_coco_ct(md_result: MDResult, output_coco: None or str=None, 
+    write: bool=False) -> COCOResult:
+    """Convert MegaDetector output JSON into a COCO-CT JSON.
 
-def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
-    """Convert MegaDetector output JSON into a COCO-CT JSON
-
-    Code taken from https://github.com/microsoft/CameraTraps/tree/main/data_management.
-
-    TODO
+    Code adapted from https://github.com/microsoft/CameraTraps/ from the 
+    `data_management` module.
     """
+    # Get base dir
+    image_base_dir = os.path.join(md_result.root, md_result.folder)
+    if output_coco == None:
+        output_coco = image_base_dir + "_output_coco.json"
 
     # Initialize empty arrays / dicts
     images = []
@@ -33,30 +41,21 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
     category_name_to_category["empty"] = empty_category
     next_category_id = 1
 
-    print("Processing .json file {}".format(md_json))
+    print(f"Processing .json file {md_result.md_file}")
 
     # Load .json annotations for this data set
-    if isinstance(md_json, str):
-        with open(md_json, "r") as f:
-            data = f.read()
-        data = json.loads(data)
-    elif isinstance(md_json, dict):
-        data = md_json
-
-    categories_this_dataset = data["detection_categories"]
-
-    # NOTE: i_entry is the "image number"
-    i_entry = 0
-    entry = data["images"][i_entry]
+    categories_this_dataset = md_result.md_categories()
 
     # PERF: Not exactly trivially parallelizable, but about 100% of the
     # time here is spent reading image sizes (which we need to do to get from
     # absolute to relative coordinates), so worth parallelizing.
-    for i_entry, entry in enumerate(tqdm(data["images"])):
+    for i_entry, entry in enumerate(tqdm(md_result.md_images())):
 
+        # Get the relative path
         image_relative_path = entry["file"]
 
         # Generate a unique ID from the path
+        # TODO turn this into a function
         image_id = (
             image_relative_path.split(".")[0]
             .replace("\\", "/")
@@ -93,7 +92,6 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
                         category_id = next_category_id
                         category = {}
                         category["id"] = category_id
-                        print("Adding category {}".format(category_name))
                         category["name"] = category_name
                         category_name_to_category[category_name] = category
                         next_category_id += 1
@@ -134,36 +132,30 @@ def md_to_coco_ct(md_json, output_json, image_base_dir=".", write=True):
     print("Finished creating CCT dictionaries")
 
     # Create info struct
-    info = dict()
-    info["year"] = 2020
-    info["version"] = 1.0
-    info["description"] = "Fun With Camera Traps"
-    info["contributor"] = "Somebody"
+    info = create_coco_info_dict(md_result)
 
     # Write .json output
     categories = list(category_name_to_category.values())
-    json_data = {}
-
-    json_data["images"] = images
-    json_data["annotations"] = annotations
-    json_data["categories"] = categories
-    json_data["info"] = info
+    
+    coco_data = {}
+    coco_data["images"] = images
+    coco_data["annotations"] = annotations
+    coco_data["categories"] = categories
+    coco_data["info"] = info
 
     if write:
-        json.dump(json_data, open(output_json, "w"), indent=2)
+        json.dump(coco_data, open(output_coco, "w"), indent=2)
+        print(f"Finished writing .json file with {len(images)} images, " +
+            f"{len(annotations)} annotations, and {len(categories)} categories")
 
-        print(
-            "Finished writing .json file with {} images, {} annotations, and {} categories".format(
-                len(images), len(annotations), len(categories)
-            )
-        )
+    coco = COCOResult(md_result.root, md_result.folder, 
+        md_result.md_file, coco_filepath = output_coco, coco_data = coco_data)
 
-    return json_data
-
+    return coco
 
 def coco_ct_to_ls(
     coco_json,
-    output_json,
+    output_coco,
     conf_threshold=0.1,
     image_root_url="/data/local-files/?d=",
     to_name="image",
@@ -179,7 +171,7 @@ def coco_ct_to_ls(
     Adapted from label_studio_converter.imports.coco
 
     :param input_file: file with COCO json
-    :param output_json: output file with Label Studio JSON tasks
+    :param output_coco: output file with Label Studio JSON tasks
     :param image_root_url: root URL/path where images will be hosted
     :param to_name: object name from Label Studio labeling config
     :param from_name: control tag name from Label Studio labeling config
@@ -334,7 +326,7 @@ def coco_ct_to_ls(
         raise Exception("Score table must be used.")
     # generate and save labeling config
     if generate_config_file:
-        label_config_file = output_json.replace(".json", "") + ".label_config.xml"
+        label_config_file = output_coco.replace(".json", "") + ".label_config.xml"
         print(f"Saving Label Studio XML to {label_config_file}")
         generate_label_config(categories, tags, to_name, from_name, label_config_file)
 
@@ -343,51 +335,17 @@ def coco_ct_to_ls(
         task_len = len(tasks)
 
         if write:
-            print(f"Saving {task_len} tasks to Label Studio JSON file {output_json}")
-            with open(output_json, "w") as out:
+            print(f"Saving {task_len} tasks to Label Studio JSON file {output_coco}")
+            with open(output_coco, "w") as out:
                 json.dump(tasks, out)
 
         return tasks
     else:
         print("ERROR: No labels converted")
 
-
-def md_to_ls(
-    md_json,
-    conf_threshold=0.1,
-    image_base_dir=".",
-    image_root_url="/data/local-files/?d=",
-    write_coco=False,
-    output_json_coco=None,
-    write_ls=False,
-    output_json_ls=None,
-    use_score_table=False,
-    score_table="",
-):
-
-    if not isinstance(output_json_coco, str):
-        output_json_coco = os.path.splitext(md_json)[0] + "_coco.json"
-
-    if not isinstance(output_json_ls, str):
-        output_json_ls = os.path.splitext(md_json)[0] + "_ls.json"
-
-    coco_ct = md_to_coco_ct(md_json, output_json_coco, image_base_dir, write=write_coco)
-    ls = coco_ct_to_ls(
-        coco_ct,
-        output_json_ls,
-        conf_threshold,
-        image_root_url,
-        write=write_ls,
-        use_score_table=use_score_table,
-        score_table=score_table,
-    )
-    return ls
-
-
 # TODO review tags info
 
-
-def md_to_csv(md_json, read_exif=False, write=True):
+def md_to_csv(md_result, read_exif=False, write=True):
     """ Convert md to csv
     
     """
@@ -406,11 +364,11 @@ def md_to_csv(md_json, read_exif=False, write=True):
         "MakerNotes:UserLabel",
     ]
 
-    with open(md_json, "r") as f:
+    with open(md_result, "r") as f:
         md = json.loads(f.read())
 
     dat = pd.json_normalize(md["images"])
-    folder = os.path.basename(md_json).split("_")[0]
+    folder = os.path.basename(md_result).split("_")[0]
 
     full_data = pd.DataFrame()
 
@@ -432,7 +390,7 @@ def md_to_csv(md_json, read_exif=False, write=True):
                 )
 
                 if read_exif:
-                    filename = os.path.join(md_json.split("_")[0], image["file"])
+                    filename = os.path.join(md_result.split("_")[0], image["file"])
 
                     with exiftool.ExifToolHelper() as et:
                         tags = et.get_tags(filename, the_tags)[0]
@@ -453,7 +411,7 @@ def md_to_csv(md_json, read_exif=False, write=True):
                 )
 
                 if read_exif:
-                    filename = os.path.join(md_json.split("_")[0], image["file"])
+                    filename = os.path.join(md_result.split("_")[0], image["file"])
 
                     with exiftool.ExifToolHelper() as et:
                         tags = et.get_tags(filename, the_tags)[0]
@@ -468,11 +426,7 @@ def md_to_csv(md_json, read_exif=False, write=True):
             print("Error on file %s" % image["file"])
 
     if write:
-        name_out = os.path.join(os.path.dirname(md_json), folder) + "_output.csv"
+        name_out = os.path.join(os.path.dirname(md_result), folder) + "_output.csv"
         full_data.to_csv(name_out, index=False)
 
     return full_data
-
-
-def coco_to_csv():
-    pass
