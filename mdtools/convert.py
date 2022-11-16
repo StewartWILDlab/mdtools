@@ -1,8 +1,9 @@
-"""Conversion of MD results to COCO and Label Studio Task json."""
+"""Conversion of MD results to coco_result and Label Studio Task json."""
 
 import os
 import json
 import exiftool
+
 import pandas as pd
 
 from tqdm import tqdm
@@ -14,20 +15,20 @@ from label_studio_converter.imports.coco import new_task
 
 from mdtools.classes import COCOResult, MDResult
 from mdtools.cocoutils import create_coco_info_dict
+from mdtools.readexif import read_exif_from_md, DEFAULT_TAGS
 
 # TODO Add info + license dict argument
 
-def md_to_coco_ct(md_result: MDResult, output_coco: None or str=None, 
-    write: bool=False) -> COCOResult:
-    """Convert MegaDetector output JSON into a COCO-CT JSON.
 
-    Code adapted from https://github.com/microsoft/CameraTraps/ from the 
+def md_to_coco_ct(md_result: MDResult, write: bool = False) -> COCOResult:
+    """Convert MegaDetector output JSON into a coco_result-CT JSON.
+
+    Code adapted from https://github.com/microsoft/CameraTraps/ from the
     `data_management` module.
     """
     # Get base dir
     image_base_dir = os.path.join(md_result.root, md_result.folder)
-    if output_coco == None:
-        output_coco = image_base_dir + "_output_coco.json"
+    output_coco = image_base_dir + "_output_coco.json"
 
     # Initialize empty arrays / dicts
     images = []
@@ -67,7 +68,8 @@ def md_to_coco_ct(md_result: MDResult, output_coco: None or str=None,
         im["id"] = image_id
         im["file_name"] = image_relative_path
 
-        pil_image = Image.open(os.path.join(image_base_dir, image_relative_path))
+        pil_image = Image.open(os.path.join(image_base_dir,
+                                            image_relative_path))
         width, height = pil_image.size
         im["width"] = width
         im["height"] = height
@@ -81,13 +83,15 @@ def md_to_coco_ct(md_result: MDResult, output_coco: None or str=None,
                 # detection = detections[0]
                 for i, detection in enumerate(detections):
 
-                    category_name = categories_this_dataset[detection["category"]]
+                    category_name = (
+                        categories_this_dataset[detection["category"]])
                     category_name = category_name.strip().lower()
                     category_name = category_name.replace(" ", "_")
 
                     # Have we seen this category before?
                     if category_name in category_name_to_category:
-                        category_id = category_name_to_category[category_name]["id"]
+                        category_id = (
+                            category_name_to_category[category_name]["id"])
                     else:
                         category_id = next_category_id
                         category = {}
@@ -107,8 +111,10 @@ def md_to_coco_ct(md_result: MDResult, output_coco: None or str=None,
 
                     if category_id != 0:
                         ann["bbox"] = detection["bbox"]
-                        # MegaDetector: [x,y,width,eight] (normalized, origin upper-left)
-                        # CCT: [x,y,width,height] (absolute, origin upper-left)
+                        # MegaDetector: [x,y,width,height]
+                        # (normalized, origin upper-left)
+                        # CCT: [x,y,width,height]
+                        # (absolute, origin upper-left)
                         ann["bbox"][0] = ann["bbox"][0] * im["width"]
                         ann["bbox"][1] = ann["bbox"][1] * im["height"]
                         ann["bbox"][2] = ann["bbox"][2] * im["width"]
@@ -136,7 +142,7 @@ def md_to_coco_ct(md_result: MDResult, output_coco: None or str=None,
 
     # Write .json output
     categories = list(category_name_to_category.values())
-    
+
     coco_data = {}
     coco_data["images"] = images
     coco_data["annotations"] = annotations
@@ -145,54 +151,50 @@ def md_to_coco_ct(md_result: MDResult, output_coco: None or str=None,
 
     if write:
         json.dump(coco_data, open(output_coco, "w"), indent=2)
-        print(f"Finished writing .json file with {len(images)} images, " +
-            f"{len(annotations)} annotations, and {len(categories)} categories")
+        print(
+            f"Finished writing .json file with {len(images)} images, "
+            + f"{len(annotations)} annotations, and "
+            + f"{len(categories)} categories"
+        )
 
-    coco = COCOResult(md_result.root, md_result.folder, 
-        md_result.md_file, coco_filepath = output_coco, coco_data = coco_data)
+    coco_result = COCOResult(
+        md_result.root,
+        md_result.folder,
+        md_result.md_file,
+        coco_filepath=output_coco,
+        coco_data=coco_data,
+    )
 
-    return coco
+    return coco_result
+
 
 def coco_ct_to_ls(
-    coco_json,
-    output_coco,
-    conf_threshold=0.1,
-    image_root_url="/data/local-files/?d=",
-    to_name="image",
-    from_name="label",
-    out_type="predictions",
-    generate_config_file=False,
-    write=True,
-    use_score_table=False,
-    score_table="",
+    coco_result: COCOResult, exif_tab: pd.DataFrame,
+    conf_threshold: float = 0.1, write: bool = False,
 ):
-    """Convert COCO CT labeling to Label Studio JSON
+    """Convert coco_result CT labeling to Label Studio JSON.
 
-    Adapted from label_studio_converter.imports.coco
+    Adapted from label_studio_converter.imports.coco_result
 
-    :param input_file: file with COCO json
+    :param input_file: file with coco_result json
     :param output_coco: output file with Label Studio JSON tasks
     :param image_root_url: root URL/path where images will be hosted
     :param to_name: object name from Label Studio labeling config
     :param from_name: control tag name from Label Studio labeling config
     :param out_type: annotation type - "annotations" or "predictions"
-    :param generate_config_file: whether to generate the XML config file
     """
+    # TODO check if cocoresult HAS exif data
 
     # Initiate task dict
     tasks = {}  # image_id => task
 
-    # Open file if needed
-    if isinstance(coco_json, str):
-        with open(coco_json, "r") as f:
-            coco = json.loads(f.read())
-    elif isinstance(coco_json, dict):
-        coco = coco_json
-
     # build categories => labels dict
     new_categories = {}
     # list to dict conversion: [...] => {category_id: category_item}
-    categories = {int(category["id"]): category for category in coco["categories"]}
+    coco_cat = coco_result.coco_categories()
+    categories = {
+        int(category["id"]): category for category in coco_cat
+    }
     ids = sorted(categories.keys())  # sort labels by their origin ids
 
     for i in ids:
@@ -203,132 +205,127 @@ def coco_ct_to_ls(
     categories = new_categories
 
     # mapping: image id => image
-    images = {item["id"]: item for item in coco["images"]}
+    images = {item["id"]: item for item in coco_result.coco_images()}
 
     print(
-        f'Found {len(categories)} categories, {len(images)} images and {len(coco["annotations"])} annotations'
+        f"Found {len(categories)} categories, {len(images)} images and " +
+        f"{len(coco_result.coco_annotations())} annotations"
     )
 
-    # flags for labeling config composing
+    # Parameters for labeling config composing
+    image_root_url: str = "/data/local-files/?d="
+    to_name = "image"
+    from_name = "label"
+    out_type = "predictions"
     bbox = False
     bbox_once = False
     rectangles_from_name = from_name + "_rectangles"
     tags = {}
 
-    if use_score_table:
-        print("Reading score table")
-        score_table = pd.read_csv(score_table).loc[
-            :,
-            [
-                "file",
-                "conf",
-                "File:Directory",
-                "MakerNotes:Sequence",
-                "MakerNotes:EventNumber",
-            ],
+    score_table = exif_tab.loc[
+        :,
+        [
+            "file",
+            "conf",
+            "File:Directory",
+            "MakerNotes:Sequence",
+            "MakerNotes:EventNumber",
+        ],
+    ]
+
+    score_table["conf"] = pd.to_numeric(score_table["conf"], errors='coerce')
+
+    score_table_unique = score_table.drop_duplicates()
+
+    for key in tqdm(images.keys()):
+
+        filtered = score_table_unique[
+            score_table_unique.file == images[key]["file_name"]
         ]
-        score_table_unique = score_table.drop_duplicates()
-        print("Score table read")
 
-        for key in tqdm(images.keys()):
+        if filtered.shape[0] == 0:
 
-            # if key == "P028-1_WLU-10_DCIM_100RECNX_RCNX0232":
-            #     print("*****")
-            #     print(key)
-            #     print(score_table_unique[score_table_unique.file == images[key]["file_name"]])
-            #     print("*****")
+            file_name = images[key]["file_name"]
+            print(f"skipping file {file_name}")
 
-            filtered = score_table_unique[
-                score_table_unique.file == images[key]["file_name"]]
+        else:
 
-            if filtered.shape[0] == 0:
-                
-                file_name = images[key]["file_name"]
-                print(f"skipping file {file_name}")
+            images[key]["sequence_id"] = (
+                filtered["MakerNotes:Sequence"].iloc[0])
+            images[key]["sequence_nb"] = (
+                filtered["MakerNotes:EventNumber"].iloc[0])
+            images[key]["dir"] = filtered["File:Directory"].iloc[0]
 
+            image_seq_id = images[key]["sequence_id"]
+            image_seq_number = images[key]["sequence_nb"]
+            image_dir = images[key]["dir"]
+
+            if image_seq_id == "0 0":
+                subset = score_table_unique[
+                    score_table_unique.file == images[key]["file_name"]
+                ]
             else:
+                query = (f"`MakerNotes:EventNumber` == {image_seq_number} " +
+                         f"and `File:Directory` == '{image_dir}' " +
+                         f"and `MakerNotes:Sequence` != '0 0'")
+                subset = score_table.query(query)
 
-                images[key]["sequence_id"] = filtered["MakerNotes:Sequence"].iloc[0]
-                images[key]["sequence_nb"] = filtered["MakerNotes:EventNumber"].iloc[0]
-                images[key]["dir"] = filtered["File:Directory"].iloc[0]
+            if subset.shape[0] == 0:
+                images[key]["max_sequence_conf"] = 0
+            else:
+                assert subset["file"].drop_duplicates().shape[0] <= 5
+                images[key]["max_sequence_conf"] = max(subset["conf"])
 
-                image_seq_id = images[key]["sequence_id"]
-                image_seq_number = images[key]["sequence_nb"]
-                image_dir = images[key]["dir"]
+    for i, annotation in enumerate(tqdm(coco_result.coco_annotations())):
 
-                if image_seq_id == "0 0":
-                    subset = score_table_unique[
-                        score_table_unique.file == images[key]["file_name"]
-                    ]
-                else:
-                    subset = score_table.query(
-                        f"`MakerNotes:EventNumber` == {image_seq_number} and `File:Directory` == '{image_dir}' and `MakerNotes:Sequence` != '0 0'"
-                    )
+        image_id = annotation["image_id"]
+        image = images[image_id]
 
-                if subset.shape[0] == 0:
-                    images[key]["max_sequence_conf"] = 0
-                else:
-                    assert subset["file"].drop_duplicates().shape[0] <= 5
-                    images[key]["max_sequence_conf"] = max(subset["conf"])
+        image_conf = image["max_sequence_conf"]
 
-        for i, annotation in enumerate(tqdm(coco["annotations"])):
+        bbox |= "bbox" in annotation`
 
-            image_id = annotation["image_id"]
-            image = images[image_id]
+        if bbox and not bbox_once:
+            tags.update({rectangles_from_name: "RectangleLabels"})
+            bbox_once = True
 
-            image_conf = image["max_sequence_conf"]
+        # read image sizes & detection confidence
 
-            bbox |= "bbox" in annotation
+        image_file_name, image_width, image_height = (
+            image["file_name"],
+            image["width"],
+            image["height"],
+        )
 
-            if bbox and not bbox_once:
-                tags.update({rectangles_from_name: "RectangleLabels"})
-                bbox_once = True
+        if image_conf >= float(conf_threshold):
 
-            # read image sizes & detection confidence
+            # get or create new task
+            if image_id in tasks:
+                task = tasks[image_id]
+            else:
+                task = new_task(out_type, image_root_url, image_file_name)
+                task[out_type][0]["score"] = image_conf
 
-            image_file_name, image_width, image_height = (
-                image["file_name"],
-                image["width"],
-                image["height"],
-            )
+            if "confidence" in annotation:
 
-            if image_conf >= float(conf_threshold):
+                annotation_conf = annotation["confidence"]
 
-                # get or create new task
-                if image_id in tasks:
-                    task = tasks[image_id]
-                else:
-                    task = new_task(out_type, image_root_url, image_file_name)
-                    task[out_type][0]["score"] = image_conf
+                if annotation_conf > float(conf_threshold):
 
-                if "confidence" in annotation:
+                    if "bbox" in annotation:
+                        item = create_bbox(
+                            annotation,
+                            categories,
+                            rectangles_from_name,
+                            image_height,
+                            image_width,
+                            to_name,
+                        )
+                        # Replace item id with id created in the first step
+                        item["id"] = annotation["id"]
+                        task[out_type][0]["result"].append(item)
 
-                    annotation_conf = annotation["confidence"]
-
-                    if annotation_conf > float(conf_threshold):
-
-                        if "bbox" in annotation:
-                            item = create_bbox(
-                                annotation,
-                                categories,
-                                rectangles_from_name,
-                                image_height,
-                                image_width,
-                                to_name,
-                            )
-                            # Replace item id with id created in the first step
-                            item["id"] = annotation["id"]
-                            task[out_type][0]["result"].append(item)
-
-                tasks[image_id] = task
-
-    else:
-        raise Exception("Score table must be used.")
-    # generate and save labeling config
-    if generate_config_file:
-        label_config_file = output_coco.replace(".json", "") + ".label_config.xml"
-        print(f"Saving Label Studio XML to {label_config_file}")
-        generate_label_config(categories, tags, to_name, from_name, label_config_file)
+            tasks[image_id] = task
 
     if len(tasks) > 0:
         tasks = [tasks[key] for key in sorted(tasks.keys())]
@@ -342,91 +339,3 @@ def coco_ct_to_ls(
         return tasks
     else:
         print("ERROR: No labels converted")
-
-# TODO review tags info
-
-def md_to_csv(md_result, read_exif=False, write=True):
-    """ Convert md to csv
-    
-    """
-
-    the_tags = [
-        "File:FileName",
-        "File:Directory",
-        "EXIF:DateTimeOriginal",
-        "MakerNotes:DateTimeOriginal",
-        "MakerNotes:DayOfWeek",
-        "MakerNotes:MoonPhase",
-        "MakerNotes:AmbientTemperature",
-        "MakerNotes:MotionSensitivity",
-        "MakerNotes:BatteryVoltage",
-        "MakerNotes:BatteryVoltageAvg",
-        "MakerNotes:UserLabel",
-    ]
-
-    with open(md_result, "r") as f:
-        md = json.loads(f.read())
-
-    dat = pd.json_normalize(md["images"])
-    folder = os.path.basename(md_result).split("_")[0]
-
-    full_data = pd.DataFrame()
-
-    for image in tqdm(md["images"]):
-        if "detections" in image.keys():
-
-            if len(image["detections"]) != 0:
-
-                dat = (
-                    pd.json_normalize(image["detections"])
-                    .assign(file=image["file"])
-                    .assign(folder=folder)
-                    .assign(source_file=os.path.join(folder, image["file"]))
-                    .assign(
-                        category=lambda df: df["category"].map(
-                            lambda category: int(category)
-                        )
-                    )
-                )
-
-                if read_exif:
-                    filename = os.path.join(md_result.split("_")[0], image["file"])
-
-                    with exiftool.ExifToolHelper() as et:
-                        tags = et.get_tags(filename, the_tags)[0]
-
-                    tags_df = pd.json_normalize(tags)
-                    tags_df["file"] = image["file"]
-                    dat = pd.merge(dat, tags_df, how="left", on="file")
-
-            else:
-
-                dat = (
-                    pd.DataFrame({"category": [0]})
-                    .assign(conf="NA")
-                    .assign(bbox="NA")
-                    .assign(file=image["file"])
-                    .assign(folder=folder)
-                    .assign(source_file=os.path.join(folder, image["file"]))
-                )
-
-                if read_exif:
-                    filename = os.path.join(md_result.split("_")[0], image["file"])
-
-                    with exiftool.ExifToolHelper() as et:
-                        tags = et.get_tags(filename, the_tags)[0]
-
-                    tags_df = pd.json_normalize(tags)
-                    tags_df["file"] = image["file"]
-                    dat = pd.merge(dat, tags_df, how="left", on="file")
-
-            full_data = pd.concat([full_data, dat])
-
-        else:
-            print("Error on file %s" % image["file"])
-
-    if write:
-        name_out = os.path.join(os.path.dirname(md_result), folder) + "_output.csv"
-        full_data.to_csv(name_out, index=False)
-
-    return full_data

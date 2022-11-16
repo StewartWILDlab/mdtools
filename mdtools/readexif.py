@@ -25,8 +25,6 @@ DEFAULT_TAGS = [
         "MakerNotes:UserLabel",
     ]
 
-# TODO implement
-
 
 def read_exif_from_md(md_result: MDResult or str, tags: list = DEFAULT_TAGS,
                       batchsize: int = 100, write: bool = False

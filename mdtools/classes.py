@@ -3,6 +3,8 @@
 import os
 import json
 
+import pandas as pd
+
 
 class MDResult:
     """Megadetector result class."""
@@ -86,9 +88,6 @@ class COCOResult(MDResult):
 
         # TODO: if empty, maybe load from file?
 
-        # # Property
-        # self._format: str="JSON"
-
     # Utils methods
     def __repr__(self) -> str:
         """Represent the class."""
@@ -116,7 +115,7 @@ class COCOResult(MDResult):
 
     def coco_categories(self) -> dict:
         """Get categories dict."""
-        return self.coco_data["detection_categories"]
+        return self.coco_data["categories"]
 
     def coco_info(self) -> dict:
         """Get info dict."""
