@@ -283,7 +283,7 @@ def coco_ct_to_ls(
 
         image_conf = image["max_sequence_conf"]
 
-        bbox |= "bbox" in annotation`
+        bbox |= "bbox" in annotation
 
         if bbox and not bbox_once:
             tags.update({rectangles_from_name: "RectangleLabels"})
