@@ -25,10 +25,10 @@ DEFAULT_TAGS = [
         "MakerNotes:UserLabel",
     ]
 
-# TODO add batch size arg
+# TODO implement
 
 def read_exif_from_md(md_result: MDResult or str, tags: list=DEFAULT_TAGS, 
-    batchsize: int=100, write: bool=True) -> pd.DataFrame:
+    batchsize: int=100, write: bool=False) -> pd.DataFrame:
     """Extract EXIF information from the md_result.
 
     Accepts string or MDResult object for now, will read the 
@@ -47,13 +47,11 @@ def read_exif_from_md(md_result: MDResult or str, tags: list=DEFAULT_TAGS,
     
     elif isinstance(md_result, MDResult):
         
-        md = md_result.data
+        md = md_result.md_data
         folder = md_result.folder
         root = md_result.root
         base_path = md_result.root + md_result.folder
-        print(base_path)
         name_out = base_path + "_exif.csv"
-        print(name_out)
     
     images = md["images"]
     images_has_detect_key = ["detections" in img.keys() for img in images]
