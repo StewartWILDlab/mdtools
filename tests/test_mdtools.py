@@ -1,15 +1,15 @@
+from mdtools.classes import *
 from mdtools.convert import *
+from mdtools.tabulate import *
 
 
-def test_md_to_ls():
-    ret = md_to_ls(
-        "tests/test_images/test_images_output.json",
-        0.1,
-        "tests/test_images",
-        write_coco=True,
-        write_ls=True,
-        output_json_coco="tests/test_images/test_images_output_coco_ct.json",
-        output_json_ls="tests/test_images/test_images_output_ls.json",
-    )
-    assert isinstance(ret, list)
-    assert isinstance(ret[0], dict)
+def test_pipeline():
+    res = MDResult("tests/test_images/",
+                   "test_folder", "test_folder_output.json")
+    assert isinstance(res, MDResult)
+
+    res_tab = tabulate_md(res, write=True)
+    assert isinstance(res_tab, pd.DataFrame)
+
+    coco_res = md_to_coco_ct(res, write=True)
+    assert isinstance(coco_res, COCOResult)
