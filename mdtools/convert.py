@@ -171,7 +171,7 @@ def md_to_coco_ct(md_result: MDResult, write: bool = False) -> COCOResult:
 def coco_ct_to_ls(
     coco_result: COCOResult, exif_tab: pd.DataFrame,
     conf_threshold: float = 0.1, write: bool = False,
-):
+) -> list:
     """Convert coco_result CT labeling to Label Studio JSON.
 
     Adapted from label_studio_converter.imports.coco_result
@@ -332,8 +332,11 @@ def coco_ct_to_ls(
         task_len = len(tasks)
 
         if write:
-            print(f"Saving {task_len} tasks to Label Studio JSON file {output_coco}")
-            with open(output_coco, "w") as out:
+            base_path = coco_result.root + coco_result.folder
+            output_ls = base_path + "_output_ls.json"
+            print(f"Saving {task_len} tasks to Label Studio JSON " +
+                  f"file {output_ls}")
+            with open(output_ls, "w") as out:
                 json.dump(tasks, out)
 
         return tasks

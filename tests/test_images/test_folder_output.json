@@ -1,7 +1,7 @@
 {
  "images": [
   {
-   "file": "image3.png",
+   "file": "image3.JPG",
    "max_detection_conf": 0.953,
    "detections": [
     {
@@ -37,7 +37,7 @@
    ]
   },
   {
-   "file": "image1.png",
+   "file": "image1.JPG",
    "max_detection_conf": 0.978,
    "detections": [
     {
@@ -63,7 +63,7 @@
    ]
   },
   {
-   "file": "image2.png",
+   "file": "image2.JPG",
    "max_detection_conf": 0.872,
    "detections": [
     {

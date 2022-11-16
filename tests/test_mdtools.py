@@ -13,3 +13,6 @@ def test_pipeline():
 
     coco_res = md_to_coco_ct(res, write=True)
     assert isinstance(coco_res, COCOResult)
+
+    ls = coco_ct_to_ls(coco_res, res_tab, write=True)
+    assert isinstance(ls, list)

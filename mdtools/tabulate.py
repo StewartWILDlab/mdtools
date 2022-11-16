@@ -58,6 +58,7 @@ def tabulate_md(md_result: MDResult, include_exif: bool = True,
 
     if include_exif:
         exif_data = read_exif_from_md(md_result, batchsize=batchsize)
+        print(exif_data)
         full_data = pd.merge(full_data, exif_data, how="left",
                              on="source_file")
 
