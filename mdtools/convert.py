@@ -28,7 +28,7 @@ def md_to_coco_ct(md_result: MDResult, write: bool = False) -> COCOResult:
     """
     # Get base dir
     image_base_dir = os.path.join(md_result.root, md_result.folder)
-    output_coco = image_base_dir + "_output_coco.json"
+    output_coco = image_base_dir + "_output_coco_ct.json"
 
     # Initialize empty arrays / dicts
     images = []
