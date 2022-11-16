@@ -25,7 +25,6 @@ class MDResult:
         self._default_md_categories = {'1': 'animal',
                                        '2': 'person',
                                        '3': 'vehicle'}
-        # self._format: str="MD"
 
         # Created
         with open(self.md_filepath, "r") as f:
@@ -40,11 +39,6 @@ class MDResult:
     def default_md_categories(self) -> dict:
         """Property default categories."""
         return self._default_md_categories
-
-    # @property
-    # def __format__(self) -> str:
-    #     """Property default categories."""
-    #     return(self._format)
 
     # Utils methods
     def check_md_categories(self) -> None:
@@ -104,10 +98,26 @@ class COCOResult(MDResult):
         return rep
 
     # Data methods
-    def annotations(self) -> dict:
+    def coco_annotations(self) -> dict:
         """Get annotations dict."""
         return self.coco_data["annotations"]
 
-    def numannotations(self) -> int:
+    def ncoco_umannotations(self) -> int:
         """Compute number of images in the result."""
-        return len(self.annotations())
+        return len(self.coco_annotations())
+
+    def coco_images(self) -> dict:
+        """Get images dict."""
+        return self.coco_data["images"]
+
+    def coco_numimages(self) -> int:
+        """Compute number of images in the result."""
+        return len(self.md_images())
+
+    def coco_categories(self) -> dict:
+        """Get categories dict."""
+        return self.coco_data["detection_categories"]
+
+    def coco_info(self) -> dict:
+        """Get info dict."""
+        return self.coco_data["info"]
