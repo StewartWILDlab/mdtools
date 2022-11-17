@@ -24,6 +24,11 @@ jobs:
         with:
           poetry-version: ${{ matrix.poetry-version }}
       - name: Install exiftool
-        run: sudo apt-get install exiftool
+        run: |
+          wget https://exiftool.org/Image-ExifTool-12.50.tar.gz && \
+          gzip -dc Image-ExifTool-12.50.tar.gz | tar -xf - && \
+          cd Image-ExifTool-12.50 && \
+          sudo make install && \
+          cd -
       - name: Install and test
         run: poetry install && poetry run pytest
