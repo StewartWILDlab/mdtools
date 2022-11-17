@@ -28,6 +28,8 @@ jobs:
           wget https://exiftool.org/Image-ExifTool-12.50.tar.gz && \
           gzip -dc Image-ExifTool-12.50.tar.gz | tar -xf - && \
           cd Image-ExifTool-12.50 && \
+          perl Makefile.PL && \
+          make test && \
           sudo make install && \
           cd -
       - name: Install and test
