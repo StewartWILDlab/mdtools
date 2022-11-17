@@ -78,6 +78,8 @@ def convert(
             cct.to_json()
         else:
             if os.path.isfile(coco_path_out):
+                print(f"File {coco_path_out} already exist: " +
+                      "set --write-coco to overwrite")
                 with open(coco_path_out, "r") as f:
                     cct_data = json.loads(f.read())
                 cct = COCOResult(md_result.root, md_result.folder,
@@ -86,31 +88,30 @@ def convert(
                 print("No COCO file, ser --write-coco to create")
 
         if write_csv:
-            print(csv_path_out)
             if os.path.isfile(csv_path_out):
                 print(f"File {csv_path_out} already exist, " +
                       "overwriting file")
             tab = mdt.tabulate_md(md_result, write=write_csv)
         else:
             if os.path.isfile(csv_path_out):
+                print(f"File {csv_path_out} already exist: " +
+                      "set --write-csv to overwrite")
                 tab = pd.read_csv(csv_path_out)
             else:
-                print("No CSV file, ser --write-coco to create")
+                print("No CSV file, ser --write-csv to create")
 
-        print(tab)
-
-        # mdc.md_to_ls(
-        #     click.format_filename(md_json),
-        #     conf_threshold,
-        #     image_base_dir,
-        #     image_root_url,
-        #     write_coco,
-        #     output_json_coco,
-        #     write_ls,
-        #     output_json_ls,
-        #     use_score_table,
-        #     score_table,
-        # )
+        if write_ls:
+            if os.path.isfile(ls_path_out):
+                print(f"File {ls_path_out} already exist, " +
+                      "overwriting file")
+            ls = mdc.coco_ct_to_ls(cct, tab, conf_threshold, write_ls,
+                                   image_root_url)
+        else:
+            if os.path.isfile(ls_path_out):
+                print(f"File {ls_path_out} already exist: " +
+                      "set --write-ls to overwrite")
+            else:
+                print("No LS file, ser --write-ls to create")
 
     elif output_format == "csv":
 

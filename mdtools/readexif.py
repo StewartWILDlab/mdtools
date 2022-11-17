@@ -70,6 +70,8 @@ def read_exif_from_md(md_result: MDResult or str, tags: list = DEFAULT_TAGS,
         tags_df = (pd.json_normalize(tags_data)
                    .assign(
                         source_file=lambda df: df["SourceFile"].map(
+                            # TODO Issue with +"/" => test vs CLI discrepancy
+                            # lambda SourceFile: SourceFile.replace(root+"/", "")
                             lambda SourceFile: SourceFile.replace(root, "")
                         )
                     ))
