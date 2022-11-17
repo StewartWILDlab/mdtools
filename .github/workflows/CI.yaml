@@ -33,4 +33,7 @@ jobs:
           sudo make install && \
           cd -
       - name: Install and test
-        run: poetry install && poetry run pytest
+        run: |
+          export PATH=$PATH:/usr/local/bin/exiftool && \
+          poetry install && \
+          poetry run pytest
