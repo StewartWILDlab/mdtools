@@ -1,4 +1,5 @@
 ## MegaDetector tools
+[![CI](https://github.com/StewartWILDlab/mdtools/actions/workflows/CI.yaml/badge.svg?branch=main)](https://github.com/StewartWILDlab/mdtools/actions/workflows/CI.yaml)
 
 MegaDetector tools - convert and parse MDv5 results
 
