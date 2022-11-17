@@ -43,7 +43,7 @@ def convert(
     write_csv,
     write_ls
 ):
-    """Convert command."""
+    """Convert MD results to different formats used in the pipeline."""
     # First, create object
     root = os.path.dirname(md_json)
     md_result = MDResult(root, directory, md_json)
@@ -124,5 +124,5 @@ def convert(
 @click.argument("md_json", type=click.Path(exists=True))
 @click.option("-ws", "--write-csv", help="", default=True, show_default=True)
 def readexif(md_json, write_csv):
-    """Readeexif from str command."""
+    """Read exif from string filepath."""
     mdr.read_exif_from_md(md_json, write=write_csv)

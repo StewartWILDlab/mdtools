@@ -8,27 +8,27 @@ MegaDetector tools - convert and parse MDv5 results
 #### Command: convert
 
 ```
-Usage: mdtools convert [OPTIONS] {cct|ls|csv} MD_JSON
+Usage: mdtools convert [OPTIONS] {cct|ls|csv} MD_JSON DIRECTORY
+
+  Convert MD results to different formats used in the pipeline.
 
 Options:
-  -ct, --conf-threshold FLOAT   Threshold under which predictions
-                                are removed  [default: 0.1]
-  -bd, --image-base-dir TEXT    Directory containing the raw
-                                images  [default: .]
-  -ru, --image-root-url TEXT    Label Studio local file url
-                                [default: /data/local-files/?d=]
-  -wc, --write-coco BOOLEAN     [default: False]
-  -wl, --write-ls BOOLEAN       [default: True]
-  -ws, --write-csv BOOLEAN      [default: True]
-  -oc, --output-json-coco TEXT
-  -ol, --output-json-ls TEXT
-  --help                        Show this message and exit.
+  -ct, --conf-threshold FLOAT  Threshold under which predictions are removed
+                               [default: 0.1]
+  -ru, --image-root-url TEXT   Label Studio local file url  [default:
+                               /data/local-files/?d=]
+  --write-coco
+  --write-csv
+  --write-ls
+  --help                       Show this message and exit.
 ```
 
 #### Command: readexif
 
 ```
 Usage: mdtools readexif [OPTIONS] MD_JSON
+
+  Read exif from string filepath.
 
 Options:
   -ws, --write-csv BOOLEAN  [default: True]
