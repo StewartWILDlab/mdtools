@@ -20,7 +20,7 @@ from mdtools.readexif import read_exif_from_md, DEFAULT_TAGS
 # TODO Add info + license dict argument
 
 
-def md_to_coco_ct(md_result: MDResult, write: bool = False) -> COCOResult:
+def md_to_coco_ct(md_result: MDResult) -> COCOResult:
     """Convert MegaDetector output JSON into a coco_result-CT JSON.
 
     Code adapted from https://github.com/microsoft/CameraTraps/ from the
@@ -28,7 +28,6 @@ def md_to_coco_ct(md_result: MDResult, write: bool = False) -> COCOResult:
     """
     # Get base dir
     image_base_dir = os.path.join(md_result.root, md_result.folder)
-    output_coco = image_base_dir + "_output_coco_ct.json"
 
     # Initialize empty arrays / dicts
     images = []
@@ -149,19 +148,10 @@ def md_to_coco_ct(md_result: MDResult, write: bool = False) -> COCOResult:
     coco_data["categories"] = categories
     coco_data["info"] = info
 
-    if write:
-        json.dump(coco_data, open(output_coco, "w"), indent=2)
-        print(
-            f"Finished writing .json file with {len(images)} images, "
-            + f"{len(annotations)} annotations, and "
-            + f"{len(categories)} categories"
-        )
-
     coco_result = COCOResult(
         md_result.root,
         md_result.folder,
         md_result.md_file,
-        coco_filepath=output_coco,
         coco_data=coco_data,
     )
 
@@ -171,6 +161,7 @@ def md_to_coco_ct(md_result: MDResult, write: bool = False) -> COCOResult:
 def coco_ct_to_ls(
     coco_result: COCOResult, exif_tab: pd.DataFrame,
     conf_threshold: float = 0.1, write: bool = False,
+    image_root_url: str = "/data/local-files/?d="
 ) -> list:
     """Convert coco_result CT labeling to Label Studio JSON.
 
@@ -213,7 +204,6 @@ def coco_ct_to_ls(
     )
 
     # Parameters for labeling config composing
-    image_root_url: str = "/data/local-files/?d="
     to_name = "image"
     from_name = "label"
     out_type = "predictions"

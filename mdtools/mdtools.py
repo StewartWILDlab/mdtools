@@ -1,10 +1,15 @@
 """CLI utility module."""
 
 import click
+import os
+import json
 
 from mdtools import convert as mdc
 from mdtools import readexif as mdr
 from mdtools import tabulate as mdt
+from mdtools.classes import COCOResult, MDResult
+
+import pandas as pd
 
 
 @click.group
@@ -14,92 +19,109 @@ def mdtools():
 
 
 @mdtools.command("convert")
-@click.argument(
-    "output_format", type=click.Choice(["cct", "ls", "csv"], case_sensitive=False)
-)
+@click.argument("output_format", type=click.Choice(["cct", "ls", "csv"],
+                case_sensitive=False))
 @click.argument("md_json", type=click.Path(exists=True))
-@click.option(
-    "-ct",
-    "--conf-threshold",
-    default=0.1,
-    help="Threshold under which predictions are removed",
-    type=click.FLOAT,
-    show_default=True,
-)
-@click.option(
-    "-bd",
-    "--image-base-dir",
-    help="Directory containing the raw images",
-    default=".",
-    show_default=True,
-)
-@click.option(
-    "-ru",
-    "--image-root-url",
-    help="Label Studio local file url",
-    default="/data/local-files/?d=",
-    show_default=True,
-)
-@click.option("-wc", "--write-coco", help="", default=False, show_default=True)
-@click.option("-wl", "--write-ls", help="", default=True, show_default=True)
-@click.option("-re", "--read-exif", help="", default=False, show_default=True)
-@click.option("-ws", "--write-csv", help="", default=True, show_default=True)
-@click.option("-oc", "--output-json-coco", help="", default=None)
-@click.option("-ol", "--output-json-ls", help="", default=None)
-@click.option("-st", "--use-score-table", help="", default=None)
-@click.option(
-    "-ta",
-    "--score-table",
-    help="Score table",
-    default=None,
-    type=click.Path(exists=True),
-)
+@click.argument("directory", type=click.STRING)
+@click.option("-ct", "--conf-threshold", default=0.1,
+              help="Threshold under which predictions are removed",
+              type=click.FLOAT,
+              show_default=True)
+@click.option("-ru", "--image-root-url", help="Label Studio local file url",
+              default="/data/local-files/?d=",
+              show_default=True)
+@click.option("--write-coco", is_flag=True)
+@click.option("--write-csv", is_flag=True)
+@click.option("--write-ls", is_flag=True)
 def convert(
     output_format,
     md_json,
+    directory,
     conf_threshold,
-    image_base_dir,
     image_root_url,
     write_coco,
-    output_json_coco,
-    write_ls,
-    read_exif,
-    output_json_ls,
     write_csv,
-    use_score_table,
-    score_table,
+    write_ls
 ):
+    """Convert command."""
+    # First, create object
+    root = os.path.dirname(md_json)
+    md_result = MDResult(root, directory, md_json)
 
     if output_format == "cct":
 
-        mdc.md_to_coco_ct(
-            click.format_filename(md_json), output_json_coco, image_base_dir, write_coco
-        )
+        coco_path_out = md_result.make_coco_write_path()
+        cct = mdc.md_to_coco_ct(md_result)
+
+        if write_coco:
+            coco_path_out = cct.make_coco_write_path()
+
+            if os.path.isfile(coco_path_out):
+                print(f"File {coco_path_out} already exist, " +
+                      "overwriting file")
+
+            cct.to_json()
+        else:
+            print(cct)
 
     elif output_format == "ls":
 
-        mdc.md_to_ls(
-            click.format_filename(md_json),
-            conf_threshold,
-            image_base_dir,
-            image_root_url,
-            write_coco,
-            output_json_coco,
-            write_ls,
-            output_json_ls,
-            use_score_table,
-            score_table,
-        )
+        coco_path_out = md_result.make_coco_write_path()
+        ls_path_out = md_result.make_ls_write_path()
+        csv_path_out = md_result.make_csv_write_path()
+
+        if write_coco:
+            if os.path.isfile(coco_path_out):
+                print(f"File {coco_path_out} already exist, " +
+                      "overwriting file")
+            cct = mdc.md_to_coco_ct(md_result)
+            cct.to_json()
+        else:
+            if os.path.isfile(coco_path_out):
+                with open(coco_path_out, "r") as f:
+                    cct_data = json.loads(f.read())
+                cct = COCOResult(md_result.root, md_result.folder,
+                                 md_result.md_file, coco_data=cct_data)
+            else:
+                print("No COCO file, ser --write-coco to create")
+
+        if write_csv:
+            print(csv_path_out)
+            if os.path.isfile(csv_path_out):
+                print(f"File {csv_path_out} already exist, " +
+                      "overwriting file")
+            tab = mdt.tabulate_md(md_result, write=write_csv)
+        else:
+            if os.path.isfile(csv_path_out):
+                tab = pd.read_csv(csv_path_out)
+            else:
+                print("No CSV file, ser --write-coco to create")
+
+        print(tab)
+
+        # mdc.md_to_ls(
+        #     click.format_filename(md_json),
+        #     conf_threshold,
+        #     image_base_dir,
+        #     image_root_url,
+        #     write_coco,
+        #     output_json_coco,
+        #     write_ls,
+        #     output_json_ls,
+        #     use_score_table,
+        #     score_table,
+        # )
 
     elif output_format == "csv":
 
-        mdc.md_to_csv(click.format_filename(md_json), read_exif, write_csv)
+        print("Not directly implemented")
+        # TODO re implement
+        # mdc.md_to_csv(click.format_filename(md_json), read_exif, write_csv)
 
-
-# Shouls still work as standalone
 
 @mdtools.command("readexif")
 @click.argument("md_json", type=click.Path(exists=True))
 @click.option("-ws", "--write-csv", help="", default=True, show_default=True)
 def readexif(md_json, write_csv):
-    mdr.read_exif_from_md(md_json, tags="all", write=write_csv)
+    """Readeexif from str command."""
+    mdr.read_exif_from_md(md_json, write=write_csv)

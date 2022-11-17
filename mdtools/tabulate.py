@@ -57,8 +57,6 @@ def tabulate_md(md_result: MDResult, include_exif: bool = True,
                              on="source_file")
 
     if write:
-        base_path = md_result.root + md_result.folder
-        name_out = base_path + "_output.csv"
-        full_data.to_csv(name_out, index=False)
+        full_data.to_csv(md_result.make_csv_write_path(), index=False)
 
     return full_data

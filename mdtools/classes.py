@@ -3,8 +3,6 @@
 import os
 import json
 
-import pandas as pd
-
 
 class MDResult:
     """Megadetector result class."""
@@ -53,6 +51,21 @@ class MDResult:
         return ("MD Results in MD format: \n" +
                 f"  * MD file @ '{self.md_filepath}'")
 
+    def make_coco_write_path(self) -> str:
+        """Create the path to write coco out as json."""
+        image_base_dir = os.path.join(self.root, self.folder)
+        return image_base_dir + "_output_coco.json"
+
+    def make_ls_write_path(self) -> str:
+        """Create the path to write coco out as json."""
+        image_base_dir = os.path.join(self.root, self.folder)
+        return image_base_dir + "_output_ls.json"
+
+    def make_csv_write_path(self) -> str:
+        """Create the path to write coco out as json."""
+        image_base_dir = os.path.join(self.root, self.folder)
+        return image_base_dir + "_output.csv"
+
     # Data methods
     def md_images(self) -> dict:
         """Get images dict."""
@@ -75,26 +88,40 @@ class COCOResult(MDResult):
     """Megadetector coco class (wrap around a json)."""
 
     def __init__(self, root: str, folder: str, md_file: str,
-                 coco_filepath: str, coco_data: dict = {}):
+                 coco_data: dict = {}):
         """Initialize the class."""
         super().__init__(root, folder, md_file)
 
         # Provided
-        self.coco_file: str = os.path.basename(coco_filepath)
         self.coco_data: dict = coco_data
 
         # Computed
-        self.coco_filepath: str = coco_filepath
+        self.coco_filepath: str = ""
+        self.coco_file: str = ""
 
         # TODO: if empty, maybe load from file?
 
     # Utils methods
     def __repr__(self) -> str:
         """Represent the class."""
+        # TODO check if coco_filepath is not equal to ""
         rep = ("MD Results in COCO format: \n" +
                f" * MD file   @ '{self.md_filepath}' \n" +
                f" * COCO file @ '{self.coco_filepath}'")
         return rep
+
+    def to_json(self) -> bool:
+        """Write to JSON."""
+        path = self.make_coco_write_path()
+        self.coco_filepath = path
+        self.coco_file: str = os.path.basename(path)
+        print(
+            f"Writing .json file with {len(self.coco_images())} images, "
+            + f"{len(self.coco_annotations())} annotations, and "
+            + f"{len(self.coco_categories())} categories"
+        )
+        json.dump(self.coco_data, open(path, "w"), indent=2)
+        return True
 
     # Data methods
     def coco_annotations(self) -> dict:

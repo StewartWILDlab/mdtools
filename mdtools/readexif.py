@@ -51,8 +51,8 @@ def read_exif_from_md(md_result: MDResult or str, tags: list = DEFAULT_TAGS,
         md = md_result.md_data
         folder = md_result.folder
         root = md_result.root
-        base_path = md_result.root + md_result.folder
-        name_out = base_path + "_exif.csv"
+        name_out = md_result.make_csv_write_path()
+        base_path = os.path.join(os.path.dirname(name_out), folder)
 
     images = md["images"]
     images_has_detect_key = ["detections" in img.keys() for img in images]
