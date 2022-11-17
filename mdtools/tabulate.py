@@ -51,15 +51,14 @@ def tabulate_md(md_result: MDResult, include_exif: bool = True,
         else:
             print("Error on file %s" % image["file"])
 
+    if include_exif:
+        exif_data = read_exif_from_md(md_result, batchsize=batchsize)
+        full_data = pd.merge(full_data, exif_data, how="left",
+                             on="source_file")
+
     if write:
         base_path = md_result.root + md_result.folder
         name_out = base_path + "_output.csv"
         full_data.to_csv(name_out, index=False)
-
-    if include_exif:
-        exif_data = read_exif_from_md(md_result, batchsize=batchsize)
-        print(exif_data)
-        full_data = pd.merge(full_data, exif_data, how="left",
-                             on="source_file")
 
     return full_data

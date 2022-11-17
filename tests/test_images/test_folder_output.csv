@@ -1,8 +1,8 @@
-category,conf,bbox,file,folder,source_file
-1,0.0231,"[0.0005219, 0.6948, 0.1028, 0.1328]",image3.JPG,test_folder,test_folder/image3.JPG
-1,0.949,"[0, 0.3956, 0.49, 0.4536]",image3.JPG,test_folder,test_folder/image3.JPG
-1,0.953,"[0.1597, 0.6703, 0.2541, 0.2063]",image3.JPG,test_folder,test_folder/image3.JPG
-1,0.0068,"[0.3021, 0.2613, 0.024, 0.06681]",image1.JPG,test_folder,test_folder/image1.JPG
-1,0.978,"[0.1064, 0.02895, 0.2927, 0.6332]",image1.JPG,test_folder,test_folder/image1.JPG
-1,0.0559,"[0.1419, 0.7067, 0.1962, 0.2702]",image2.JPG,test_folder,test_folder/image2.JPG
-1,0.872,"[0.144, 0.5181, 0.6795, 0.4587]",image2.JPG,test_folder,test_folder/image2.JPG
+category,conf,bbox,file,folder,source_file,SourceFile,File:FileName,File:Directory,MakerNotes:Sequence,MakerNotes:EventNumber,EXIF:DateTimeOriginal,MakerNotes:DateTimeOriginal,MakerNotes:DayOfWeek,MakerNotes:MoonPhase,MakerNotes:AmbientTemperature,MakerNotes:MotionSensitivity,MakerNotes:BatteryVoltage,MakerNotes:BatteryVoltageAvg,MakerNotes:UserLabel
+1,0.0231,"[0.0005219, 0.6948, 0.1028, 0.1328]",image3.JPG,test_folder,test_folder/image3.JPG,tests/test_images/test_folder/image3.JPG,image3.JPG,tests/test_images/test_folder,5 5,118,2022:09:19 16:45:17,2022:19:09 16:45:17,2,6,16,90,9798,9872,WLU-49
+1,0.949,"[0, 0.3956, 0.49, 0.4536]",image3.JPG,test_folder,test_folder/image3.JPG,tests/test_images/test_folder/image3.JPG,image3.JPG,tests/test_images/test_folder,5 5,118,2022:09:19 16:45:17,2022:19:09 16:45:17,2,6,16,90,9798,9872,WLU-49
+1,0.953,"[0.1597, 0.6703, 0.2541, 0.2063]",image3.JPG,test_folder,test_folder/image3.JPG,tests/test_images/test_folder/image3.JPG,image3.JPG,tests/test_images/test_folder,5 5,118,2022:09:19 16:45:17,2022:19:09 16:45:17,2,6,16,90,9798,9872,WLU-49
+1,0.0068,"[0.3021, 0.2613, 0.024, 0.06681]",image1.JPG,test_folder,test_folder/image1.JPG,tests/test_images/test_folder/image1.JPG,image1.JPG,tests/test_images/test_folder,3 5,118,2022:09:19 16:45:16,2022:19:09 16:45:16,2,6,16,90,9821,9872,WLU-49
+1,0.978,"[0.1064, 0.02895, 0.2927, 0.6332]",image1.JPG,test_folder,test_folder/image1.JPG,tests/test_images/test_folder/image1.JPG,image1.JPG,tests/test_images/test_folder,3 5,118,2022:09:19 16:45:16,2022:19:09 16:45:16,2,6,16,90,9821,9872,WLU-49
+1,0.0559,"[0.1419, 0.7067, 0.1962, 0.2702]",image2.JPG,test_folder,test_folder/image2.JPG,tests/test_images/test_folder/image2.JPG,image2.JPG,tests/test_images/test_folder,4 5,118,2022:09:19 16:45:16,2022:19:09 16:45:16,2,6,16,90,9821,9872,WLU-49
+1,0.872,"[0.144, 0.5181, 0.6795, 0.4587]",image2.JPG,test_folder,test_folder/image2.JPG,tests/test_images/test_folder/image2.JPG,image2.JPG,tests/test_images/test_folder,4 5,118,2022:09:19 16:45:16,2022:19:09 16:45:16,2,6,16,90,9821,9872,WLU-49
