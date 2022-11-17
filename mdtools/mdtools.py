@@ -1,12 +1,15 @@
+"""CLI utility module."""
+
 import click
 
 from mdtools import convert as mdc
 from mdtools import readexif as mdr
-from mdtools import join as mdj
+from mdtools import tabulate as mdt
 
 
 @click.group
 def mdtools():
+    """Create main command."""
     pass
 
 
@@ -93,18 +96,10 @@ def convert(
         mdc.md_to_csv(click.format_filename(md_json), read_exif, write_csv)
 
 
+# Shouls still work as standalone
+
 @mdtools.command("readexif")
 @click.argument("md_json", type=click.Path(exists=True))
 @click.option("-ws", "--write-csv", help="", default=True, show_default=True)
 def readexif(md_json, write_csv):
     mdr.read_exif_from_md(md_json, tags="all", write=write_csv)
-
-
-@mdtools.command("joinexif")
-@click.argument("csv_file", type=click.Path(exists=True))
-@click.argument("exif_file", type=click.Path(exists=True))
-@click.argument("join_file", type=click.Path(exists=False))
-@click.option("-ws", "--write-csv", help="", default=True, show_default=True)
-@click.option("-b", "--by", help="", default="source_file", show_default=True)
-def joinexif(csv_file, exif_file, join_file, write_csv, by):
-    mdj.join_exif_to_csv(csv_file, exif_file, join_file, write=write_csv, by=by)
