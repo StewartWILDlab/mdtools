@@ -15,9 +15,9 @@ def test_pipeline():
         res_tab.loc[:, res_tab.columns != 'bbox'],
         res_tab_test.loc[:, res_tab_test.columns != 'bbox'])
 
-    with open("tests/test_images/test_folder_output_coco_ct.json", "r") as f:
+    with open("tests/test_images/test_folder_output_coco.json", "r") as f:
         coco_res_test = json.loads(f.read())
-    coco_res = md_to_coco_ct(res, write=False)
+    coco_res = md_to_coco_ct(res)
     assert isinstance(coco_res, COCOResult)
     assert coco_res.coco_data == coco_res_test
 
