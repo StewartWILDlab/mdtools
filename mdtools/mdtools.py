@@ -12,7 +12,7 @@ from mdtools.classes import COCOResult, MDResult
 import pandas as pd
 
 
-@click.group
+@click.group()
 def mdtools():
     """Create main command."""
     pass
