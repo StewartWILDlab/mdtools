@@ -132,6 +132,6 @@ dmypy.json
 tests/test_images/test_folder/*.JPG
 
 # Sublime
-mdtools.sublime-project
-mdtools.sublime-workspace
 build.py
+*.sublime*
+
