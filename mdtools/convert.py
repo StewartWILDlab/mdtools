@@ -3,8 +3,10 @@
 import os
 import json
 import exiftool
+import math
 
 import pandas as pd
+import numpy as np
 
 from tqdm import tqdm
 from PIL import Image
@@ -260,11 +262,13 @@ def coco_ct_to_ls(
                          f"and `MakerNotes:Sequence` != '0 0'")
                 subset = score_table.query(query)
 
+
+
             if subset.shape[0] == 0:
                 images[key]["max_sequence_conf"] = 0
             else:
                 assert subset["file"].drop_duplicates().shape[0] <= 5
-                images[key]["max_sequence_conf"] = max(subset["conf"])
+                images[key]["max_sequence_conf"] = np.nanmax(subset["conf"])
 
     for i, annotation in enumerate(tqdm(coco_result.coco_annotations())):
 

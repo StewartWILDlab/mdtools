@@ -38,7 +38,7 @@ def tabulate_md(md_result: MDResult, include_exif: bool = True,
 
                 dat = (
                     pd.DataFrame({"category": [0]})
-                    .assign(conf="NA")
+                    .assign(conf="0")
                     .assign(bbox="NA")
                     .assign(file=image["file"])
                     .assign(folder=md_result.folder)
