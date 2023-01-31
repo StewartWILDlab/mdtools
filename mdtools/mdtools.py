@@ -7,6 +7,7 @@ import json
 from mdtools import convert as mdc
 from mdtools import readexif as mdr
 from mdtools import tabulate as mdt
+from mdtools import labelstudio as mdl
 from mdtools.classes import COCOResult, MDResult
 
 import pandas as pd
@@ -43,7 +44,7 @@ def convert(
     write_csv,
     write_ls
 ):
-    """Convert MD results to different formats used in the pipeline."""
+    """Convert MD results to different formats."""
     # First, create object
     root = os.path.dirname(md_json)
     md_result = MDResult(root, directory, md_json)
@@ -85,7 +86,7 @@ def convert(
                 cct = COCOResult(md_result.root, md_result.folder,
                                  md_result.md_file, coco_data=cct_data)
             else:
-                print("No COCO file, ser --write-coco to create")
+                print("No COCO file, set --write-coco to create")
 
         if write_csv:
             if os.path.isfile(csv_path_out):
@@ -98,7 +99,7 @@ def convert(
                       "set --write-csv to overwrite")
                 tab = pd.read_csv(csv_path_out)
             else:
-                print("No CSV file, ser --write-csv to create")
+                print("No CSV file, set --write-csv to create")
 
         if write_ls:
             if os.path.isfile(ls_path_out):
@@ -111,7 +112,7 @@ def convert(
                 print(f"File {ls_path_out} already exist: " +
                       "set --write-ls to overwrite")
             else:
-                print("No LS file, ser --write-ls to create")
+                print("No LS file, set --write-ls to create")
 
     elif output_format == "csv":
 
