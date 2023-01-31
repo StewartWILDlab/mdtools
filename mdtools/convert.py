@@ -327,7 +327,7 @@ def coco_ct_to_ls(
 
         if write:
             base_path = coco_result.root + coco_result.folder
-            output_ls = base_path + "_output_ls.json"
+            output_ls = coco_result.folder + "_output_ls.json"
             print(f"Saving {task_len} tasks to Label Studio JSON " +
                   f"file {output_ls}")
             with open(output_ls, "w") as out:
