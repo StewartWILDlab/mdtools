@@ -128,7 +128,7 @@ class COCOResult(MDResult):
         """Get annotations dict."""
         return self.coco_data["annotations"]
 
-    def ncoco_umannotations(self) -> int:
+    def coco_numannotations(self) -> int:
         """Compute number of images in the result."""
         return len(self.coco_annotations())
 
