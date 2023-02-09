@@ -127,3 +127,15 @@ def convert(
 def readexif(md_json, write_csv):
     """Read exif from string filepath."""
     mdr.read_exif_from_md(md_json, write=write_csv)
+
+@mdtools.command("postprocess")
+@click.argument("ls_json", type=click.Path(exists=True))
+@click.option("--write-csv", is_flag=True)
+def post_process(ls_json, write_csv):
+    """Post process json from label studio."""
+
+    test = mdl.post_process_annotations(ls_json)
+    if write_csv:
+        test.to_csv("test_output.csv", index=False)
+
+    pass
