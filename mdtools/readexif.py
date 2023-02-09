@@ -72,7 +72,7 @@ def read_exif_from_md(md_result: MDResult or str, tags: list = DEFAULT_TAGS,
                         source_file=lambda df: df["SourceFile"].map(
                             # TODO Issue with +"/" => test vs CLI discrepancy
                             # lambda SourceFile: SourceFile.replace(root+"/", "")
-                            lambda SourceFile: SourceFile.replace(root, "")
+                            lambda SourceFile: SourceFile#.replace(root, "")
                         )
                     ))
         full_data = pd.concat([full_data, tags_df])
