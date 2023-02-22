@@ -11,7 +11,7 @@ import numpy as np
 from tqdm import tqdm
 from PIL import Image
 
-from label_studio_converter.imports.label_config import generate_label_config
+# from label_studio_converter.imports.label_config import generate_label_config
 from label_studio_converter.imports.coco import create_bbox
 from label_studio_converter.imports.coco import new_task
 
