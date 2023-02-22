@@ -26,17 +26,14 @@ def post_process_annotations(ls_json, data_str="data/local-files/?d="):
         assert ann["cancelled_annotations"] == 0
 
         for bb in ann["annotations"]:
-            
-            all_res = pd.DataFrame()
 
-            if bb["result"]:
+            if bb["result"]: # actual validated bbs
                 bb = (
                     pd.json_normalize(bb["result"], sep = "_", max_level=1)
                     .assign(source_file = "/".join(ann["data"]["image"]
                         .replace(data_str, "").strip("/").split('/')[1:]))
                     .rename(columns={'from_name': 'variable'})
                 )
-
                 bb["label_temp"] = (
                     [val[0] if isinstance(val, list) else "" for val in bb["value_rectanglelabels"]]
                 )
@@ -61,7 +58,7 @@ def post_process_annotations(ls_json, data_str="data/local-files/?d="):
                         .replace("\\", "/")
                         .replace("/", "_")
                         .replace(" ", "_"))
-                    print(source_file_id)
+                    # print(source_file_id)
                     
                     # m_counter = None
                     m_counter = 0
@@ -85,21 +82,47 @@ def post_process_annotations(ls_json, data_str="data/local-files/?d="):
                                 bb.loc[index, 'id'] = source_file_id + '_M' + str(m_counter)
                                 the_id = row['id']
 
-                    print(bb)
+                    # print(bb)
 
-                all_res = pd.concat([all_res, bb])
+            elif bb["prediction"]["result"]: # deleted bbs
 
-            else:
-                # print("EMPTY")
-                pass
+                bb = (
+                    pd.json_normalize(bb["prediction"]["result"], sep = "_", max_level=1)
+                    .assign(source_file = "/".join(ann["data"]["image"]
+                        .replace(data_str, "").strip("/").split('/')[1:]))
+                    .rename(columns={'from_name': 'variable'})
+                )
 
-            all_bb = pd.concat([all_bb, all_res])
+                bb = bb.drop(columns=['value_rectanglelabels',
+                    'value_rotation', 'image_rotation',# 'type',
+                    ])
+
+            else: # actually empty images
+
+                bb = (
+                    pd.json_normalize(bb, sep = "_", max_level=1)
+                    .assign(source_file = "/".join(ann["data"]["image"]
+                        .replace(data_str, "").strip("/").split('/')[1:]))
+                    .rename(columns={'from_name': 'variable'})
+                )[['id', 'source_file']]
+
+            all_bb = pd.concat([all_bb, bb])
 
         all_ann = pd.concat([all_ann, all_bb])
 
-    print(all_ann)
+    if 'value_text' not in all_ann:
+        all_ann['value_text'] = ''
+
+    # print(all_ann)
     return all_ann
 
+def get_name(ls_json):
+
+    with open(ls_json, "r") as f:
+        data = f.read()
+    ls = json.loads(data)
+
+    return f"out_{ls[0]['id']}"
 
 # def clean_csv_output(ls_csv, out_file, data_str="data/local-files/?d=", write=True):
 

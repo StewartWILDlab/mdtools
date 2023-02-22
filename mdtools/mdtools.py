@@ -134,8 +134,11 @@ def readexif(md_json, write_csv):
 def post_process(ls_json, write_csv):
     """Post process json from label studio."""
 
+    print(ls_json)
+
+    base = mdl.get_name(ls_json)
     test = mdl.post_process_annotations(ls_json)
     if write_csv:
-        test.to_csv("test_output.csv", index=False)
+        test.to_csv(f"{base}_output.csv", index=False)
 
     pass
