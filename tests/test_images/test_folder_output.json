@@ -1,42 +1,6 @@
 {
  "images": [
   {
-   "file": "RCNX0054.JPG",
-   "max_detection_conf": 0.976,
-   "detections": [
-    {
-     "category": "1",
-     "conf": 0.137,
-     "bbox": [
-      0.08837,
-      0.3499,
-      0.02099,
-      0.02708
-     ]
-    },
-    {
-     "category": "1",
-     "conf": 0.554,
-     "bbox": [
-      0.6083,
-      0.3812,
-      0.01806,
-      0.025
-     ]
-    },
-    {
-     "category": "1",
-     "conf": 0.976,
-     "bbox": [
-      0.2944,
-      0.4875,
-      0.1967,
-      0.1722
-     ]
-    }
-   ]
-  },
-  {
    "file": "RCNX0395.JPG",
    "max_detection_conf": 0.976,
    "detections": [
@@ -79,42 +43,6 @@
    ]
   },
   {
-   "file": "RCNX3911.JPG",
-   "max_detection_conf": 0.978,
-   "detections": [
-    {
-     "category": "1",
-     "conf": 0.0342,
-     "bbox": [
-      0.7832,
-      0.6687,
-      0.06542,
-      0.05486
-     ]
-    },
-    {
-     "category": "1",
-     "conf": 0.877,
-     "bbox": [
-      0.7841,
-      0.5069,
-      0.07958,
-      0.1083
-     ]
-    },
-    {
-     "category": "1",
-     "conf": 0.978,
-     "bbox": [
-      0,
-      0.6048,
-      0.3247,
-      0.3715
-     ]
-    }
-   ]
-  },
-  {
    "file": "RCNX0500.JPG",
    "max_detection_conf": 0.984,
    "detections": [
@@ -126,22 +54,6 @@
       0.03888,
       0.6469,
       0.9381
-     ]
-    }
-   ]
-  },
-  {
-   "file": "RCNX0746.JPG",
-   "max_detection_conf": 0.976,
-   "detections": [
-    {
-     "category": "1",
-     "conf": 0.976,
-     "bbox": [
-      0.457,
-      0.5208,
-      0.1528,
-      0.4555
      ]
     }
    ]
@@ -325,134 +237,9 @@
    ]
   },
   {
-   "file": "RCNX2200.JPG",
-   "max_detection_conf": 0.983,
-   "detections": [
-    {
-     "category": "1",
-     "conf": 0.00679,
-     "bbox": [
-      0.1235,
-      0.05347,
-      0.1796,
-      0.1597
-     ]
-    },
-    {
-     "category": "1",
-     "conf": 0.00694,
-     "bbox": [
-      0.1865,
-      0.08055,
-      0.03564,
-      0.03819
-     ]
-    },
-    {
-     "category": "1",
-     "conf": 0.0144,
-     "bbox": [
-      0.1079,
-      0.07708,
-      0.1176,
-      0.1381
-     ]
-    },
-    {
-     "category": "1",
-     "conf": 0.983,
-     "bbox": [
-      0,
-      0.04375,
-      0.8417,
-      0.9319
-     ]
-    }
-   ]
-  },
-  {
-   "file": "RCNX0851.JPG",
-   "max_detection_conf": 0.925,
-   "detections": [
-    {
-     "category": "1",
-     "conf": 0.925,
-     "bbox": [
-      0.6982,
-      0.302,
-      0.3017,
-      0.4215
-     ]
-    }
-   ]
-  },
-  {
-   "file": "RCNX0049.JPG",
-   "max_detection_conf": 0.976,
-   "detections": [
-    {
-     "category": "1",
-     "conf": 0.937,
-     "bbox": [
-      0.5849,
-      0.3048,
-      0.07031,
-      0.1
-     ]
-    },
-    {
-     "category": "1",
-     "conf": 0.976,
-     "bbox": [
-      0.4399,
-      0.3131,
-      0.3056,
-      0.3972
-     ]
-    }
-   ]
-  },
-  {
-   "file": "RCNX1871.JPG",
-   "max_detection_conf": 0.955,
-   "detections": [
-    {
-     "category": "1",
-     "conf": 0.955,
-     "bbox": [
-      0.5273,
-      0.7986,
-      0.4277,
-      0.1784
-     ]
-    }
-   ]
-  },
-  {
-   "file": "RCNX1197.JPG",
-   "max_detection_conf": 0.719,
-   "detections": [
-    {
-     "category": "1",
-     "conf": 0.0307,
-     "bbox": [
-      0.8374,
-      0.4861,
-      0.0288,
-      0.06111
-     ]
-    },
-    {
-     "category": "1",
-     "conf": 0.719,
-     "bbox": [
-      0,
-      0.2749,
-      0.1748,
-      0.4312
-     ]
-    }
-   ]
+   "file": "RCNX0354.JPG",
+   "max_detection_conf": 0.0,
+   "detections": []
   },
   {
    "file": "RCNX6451.JPG",
@@ -477,7 +264,7 @@
   "3": "vehicle"
  },
  "info": {
-  "detection_completion_time": "2023-04-07 18:23:50",
+  "detection_completion_time": "2023-04-07 18:42:52",
   "format_version": "1.3",
   "detector": "md_v5a.0.0.pt",
   "detector_metadata": {

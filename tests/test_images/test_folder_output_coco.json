@@ -1,121 +1,353 @@
 {
   "images": [
     {
-      "id": "image3",
-      "file_name": "image3.JPG",
+      "id": "RCNX0395",
+      "file_name": "RCNX0395.JPG",
       "width": 2048,
       "height": 1440
     },
     {
-      "id": "image1",
-      "file_name": "image1.JPG",
+      "id": "RCNX9700",
+      "file_name": "RCNX9700.JPG",
       "width": 2048,
       "height": 1440
     },
     {
-      "id": "image2",
-      "file_name": "image2.JPG",
+      "id": "RCNX0500",
+      "file_name": "RCNX0500.JPG",
+      "width": 2048,
+      "height": 1440
+    },
+    {
+      "id": "RCNX6369",
+      "file_name": "RCNX6369.JPG",
+      "width": 2048,
+      "height": 1440
+    },
+    {
+      "id": "RCNX0360",
+      "file_name": "RCNX0360.JPG",
+      "width": 2048,
+      "height": 1440
+    },
+    {
+      "id": "RCNX6319",
+      "file_name": "RCNX6319.JPG",
+      "width": 2048,
+      "height": 1440
+    },
+    {
+      "id": "RCNX0354",
+      "file_name": "RCNX0354.JPG",
+      "width": 2048,
+      "height": 1440
+    },
+    {
+      "id": "RCNX6451",
+      "file_name": "RCNX6451.JPG",
       "width": 2048,
       "height": 1440
     }
   ],
   "annotations": [
     {
-      "id": "image3_0",
-      "image_id": "image3",
+      "id": "RCNX0395_0",
+      "image_id": "RCNX0395",
       "category_id": 1,
-      "confidence": 0.0231,
-      "max_confidence": 0.953,
+      "confidence": 0.976,
+      "max_confidence": 0.976,
       "isempty": false,
       "bbox": [
-        1.0688512,
-        1000.512,
-        210.5344,
-        191.232
+        669.9008,
+        568.944,
+        468.992,
+        292.896
       ]
     },
     {
-      "id": "image3_1",
-      "image_id": "image3",
+      "id": "RCNX9700_0",
+      "image_id": "RCNX9700",
       "category_id": 1,
-      "confidence": 0.949,
-      "max_confidence": 0.953,
+      "confidence": 0.838,
+      "max_confidence": 0.89,
       "isempty": false,
       "bbox": [
-        0,
-        569.664,
-        1003.52,
-        653.184
+        1210.9824,
+        622.944,
+        148.992,
+        67.9968
       ]
     },
     {
-      "id": "image3_2",
-      "image_id": "image3",
+      "id": "RCNX9700_1",
+      "image_id": "RCNX9700",
       "category_id": 1,
-      "confidence": 0.953,
-      "max_confidence": 0.953,
+      "confidence": 0.89,
+      "max_confidence": 0.89,
       "isempty": false,
       "bbox": [
-        327.0656,
-        965.232,
-        520.3968,
-        297.072
+        733.7984,
+        643.968,
+        124.98944,
+        72.9936
       ]
     },
     {
-      "id": "image1_0",
-      "image_id": "image1",
+      "id": "RCNX0500_0",
+      "image_id": "RCNX0500",
       "category_id": 1,
-      "confidence": 0.0068,
-      "max_confidence": 0.978,
+      "confidence": 0.984,
+      "max_confidence": 0.984,
       "isempty": false,
       "bbox": [
-        618.7008,
-        376.272,
-        49.152,
-        96.20639999999999
+        0.9998336,
+        55.987199999999994,
+        1324.8512,
+        1350.864
       ]
     },
     {
-      "id": "image1_1",
-      "image_id": "image1",
+      "id": "RCNX6369_0",
+      "image_id": "RCNX6369",
       "category_id": 1,
-      "confidence": 0.978,
-      "max_confidence": 0.978,
+      "confidence": 0.00598,
+      "max_confidence": 0.142,
       "isempty": false,
       "bbox": [
-        217.9072,
-        41.688,
-        599.4496,
-        911.808
+        743.8336,
+        668.88,
+        57.99936,
+        60.998400000000004
       ]
     },
     {
-      "id": "image2_0",
-      "image_id": "image2",
+      "id": "RCNX6369_1",
+      "image_id": "RCNX6369",
       "category_id": 1,
-      "confidence": 0.0559,
-      "max_confidence": 0.872,
+      "confidence": 0.00702,
+      "max_confidence": 0.142,
       "isempty": false,
       "bbox": [
-        290.6112,
-        1017.648,
-        401.8176,
-        389.08799999999997
+        595.968,
+        1314.0,
+        45.99808,
+        92.9952
       ]
     },
     {
-      "id": "image2_1",
-      "image_id": "image2",
+      "id": "RCNX6369_2",
+      "image_id": "RCNX6369",
       "category_id": 1,
-      "confidence": 0.872,
-      "max_confidence": 0.872,
+      "confidence": 0.0115,
+      "max_confidence": 0.142,
       "isempty": false,
       "bbox": [
-        294.912,
-        746.064,
-        1391.616,
-        660.528
+        543.9488,
+        1379.952,
+        62.99648,
+        27.993599999999997
+      ]
+    },
+    {
+      "id": "RCNX6369_3",
+      "image_id": "RCNX6369",
+      "category_id": 1,
+      "confidence": 0.142,
+      "max_confidence": 0.142,
+      "isempty": false,
+      "bbox": [
+        544.9728,
+        1310.9759999999999,
+        95.98976,
+        97.992
+      ]
+    },
+    {
+      "id": "RCNX0360_0",
+      "image_id": "RCNX0360",
+      "category_id": 1,
+      "confidence": 0.006,
+      "max_confidence": 0.197,
+      "isempty": false,
+      "bbox": [
+        493.9776,
+        947.952,
+        120.99584,
+        85.99680000000001
+      ]
+    },
+    {
+      "id": "RCNX0360_1",
+      "image_id": "RCNX0360",
+      "category_id": 1,
+      "confidence": 0.0106,
+      "max_confidence": 0.197,
+      "isempty": false,
+      "bbox": [
+        618.9056,
+        888.9119999999999,
+        37.9904,
+        37.9872
+      ]
+    },
+    {
+      "id": "RCNX0360_2",
+      "image_id": "RCNX0360",
+      "category_id": 1,
+      "confidence": 0.0119,
+      "max_confidence": 0.197,
+      "isempty": false,
+      "bbox": [
+        676.864,
+        917.856,
+        104.98048,
+        101.99520000000001
+      ]
+    },
+    {
+      "id": "RCNX0360_3",
+      "image_id": "RCNX0360",
+      "category_id": 1,
+      "confidence": 0.0142,
+      "max_confidence": 0.197,
+      "isempty": false,
+      "bbox": [
+        640.8192,
+        907.92,
+        81.98144,
+        82.9872
+      ]
+    },
+    {
+      "id": "RCNX0360_4",
+      "image_id": "RCNX0360",
+      "category_id": 1,
+      "confidence": 0.024,
+      "max_confidence": 0.197,
+      "isempty": false,
+      "bbox": [
+        571.8016,
+        856.944,
+        41.984,
+        42.998400000000004
+      ]
+    },
+    {
+      "id": "RCNX0360_5",
+      "image_id": "RCNX0360",
+      "category_id": 1,
+      "confidence": 0.0316,
+      "max_confidence": 0.197,
+      "isempty": false,
+      "bbox": [
+        618.9056,
+        896.976,
+        71.9872,
+        48.988800000000005
+      ]
+    },
+    {
+      "id": "RCNX0360_6",
+      "image_id": "RCNX0360",
+      "category_id": 1,
+      "confidence": 0.0341,
+      "max_confidence": 0.197,
+      "isempty": false,
+      "bbox": [
+        581.8368,
+        896.976,
+        83.98848,
+        58.9968
+      ]
+    },
+    {
+      "id": "RCNX0360_7",
+      "image_id": "RCNX0360",
+      "category_id": 1,
+      "confidence": 0.109,
+      "max_confidence": 0.197,
+      "isempty": false,
+      "bbox": [
+        765.952,
+        1064.88,
+        111.98464,
+        200.88000000000002
+      ]
+    },
+    {
+      "id": "RCNX0360_8",
+      "image_id": "RCNX0360",
+      "category_id": 1,
+      "confidence": 0.127,
+      "max_confidence": 0.197,
+      "isempty": false,
+      "bbox": [
+        646.9632,
+        910.9440000000001,
+        68.99712,
+        42.998400000000004
+      ]
+    },
+    {
+      "id": "RCNX0360_9",
+      "image_id": "RCNX0360",
+      "category_id": 1,
+      "confidence": 0.197,
+      "max_confidence": 0.197,
+      "isempty": false,
+      "bbox": [
+        567.9104,
+        861.984,
+        70.98368,
+        90.9936
+      ]
+    },
+    {
+      "id": "RCNX6319_0",
+      "image_id": "RCNX6319",
+      "category_id": 1,
+      "confidence": 0.75,
+      "max_confidence": 0.914,
+      "isempty": false,
+      "bbox": [
+        1160.8064,
+        752.976,
+        141.98784,
+        171.936
+      ]
+    },
+    {
+      "id": "RCNX6319_1",
+      "image_id": "RCNX6319",
+      "category_id": 1,
+      "confidence": 0.914,
+      "max_confidence": 0.914,
+      "isempty": false,
+      "bbox": [
+        1462.8864,
+        687.888,
+        582.8608,
+        275.904
+      ]
+    },
+    {
+      "id": "RCNX0354_0",
+      "image_id": "RCNX0354",
+      "category_id": 0,
+      "isempty": true
+    },
+    {
+      "id": "RCNX6451_0",
+      "image_id": "RCNX6451",
+      "category_id": 1,
+      "confidence": 0.954,
+      "max_confidence": 0.954,
+      "isempty": false,
+      "bbox": [
+        919.9616,
+        643.968,
+        258.8672,
+        110.9952
       ]
     }
   ],
@@ -130,7 +362,7 @@
     }
   ],
   "info": {
-    "year": 2022,
+    "year": 2023,
     "version": 1.0,
     "description": "COCO json generated from MegaDetector v5a.0.0 Results"
   }
