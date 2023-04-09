@@ -93,8 +93,8 @@ def post_process_annotations(ls_json, data_str="data/local-files/?d="):
                     .rename(columns={'from_name': 'variable'})
                 )
 
-                bb = bb.drop(columns=['value_rectanglelabels',
-                    'value_rotation', 'image_rotation',# 'type',
+                bb = bb.drop(columns=[
+                    'value_rotation', 'image_rotation',# 'type', 'value_rectanglelabels',
                     ])
 
             else: # actually empty images
