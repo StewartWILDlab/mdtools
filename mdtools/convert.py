@@ -51,7 +51,7 @@ def md_to_coco_ct(md_result: MDResult) -> COCOResult:
     # PERF: Not exactly trivially parallelizable, but about 100% of the
     # time here is spent reading image sizes (which we need to do to get from
     # absolute to relative coordinates), so worth parallelizing.
-    for i_entry, entry in enumerate(tqdm(md_result.md_images())):
+    for i_entry, entry in enumerate(tqdm(md_result.md_images())): # [90000:len(md_result.md_images())]
 
         # Get the relative path
         image_relative_path = entry["file"]
@@ -80,58 +80,64 @@ def md_to_coco_ct(md_result: MDResult) -> COCOResult:
         if "detections" in entry.keys():
             detections = entry["detections"]
 
-            if len(detections) >= 1:
-                # detection = detections[0]
-                for i, detection in enumerate(detections):
+            if detections is None:
 
-                    category_name = (
-                        categories_this_dataset[detection["category"]])
-                    category_name = category_name.strip().lower()
-                    category_name = category_name.replace(" ", "_")
-
-                    # Have we seen this category before?
-                    if category_name in category_name_to_category:
-                        category_id = (
-                            category_name_to_category[category_name]["id"])
-                    else:
-                        category_id = next_category_id
-                        category = {}
-                        category["id"] = category_id
-                        category["name"] = category_name
-                        category_name_to_category[category_name] = category
-                        next_category_id += 1
-
-                    # Create an annotation
-                    ann = {}
-                    ann["id"] = im["id"] + "_" + str(i)
-                    ann["image_id"] = im["id"]
-                    ann["category_id"] = category_id
-                    ann["confidence"] = detection["conf"]
-                    ann["max_confidence"] = entry["max_detection_conf"]
-                    ann["isempty"] = False
-
-                    if category_id != 0:
-                        ann["bbox"] = detection["bbox"]
-                        # MegaDetector: [x,y,width,height]
-                        # (normalized, origin upper-left)
-                        # CCT: [x,y,width,height]
-                        # (absolute, origin upper-left)
-                        ann["bbox"][0] = ann["bbox"][0] * im["width"]
-                        ann["bbox"][1] = ann["bbox"][1] * im["height"]
-                        ann["bbox"][2] = ann["bbox"][2] * im["width"]
-                        ann["bbox"][3] = ann["bbox"][3] * im["height"]
-                    else:
-                        assert detection["bbox"] == [0, 0, 0, 0]
-
-                    annotations.append(ann)
+                print(entry)
 
             else:
-                ann = {}
-                ann["id"] = im["id"] + "_0"
-                ann["image_id"] = im["id"]
-                ann["category_id"] = 0
-                ann["isempty"] = True
-                annotations.append(ann)
+
+                if len(detections) >= 1:
+                    # detection = detections[0]
+                    for i, detection in enumerate(detections):
+
+                        category_name = (
+                            categories_this_dataset[detection["category"]])
+                        category_name = category_name.strip().lower()
+                        category_name = category_name.replace(" ", "_")
+
+                        # Have we seen this category before?
+                        if category_name in category_name_to_category:
+                            category_id = (
+                                category_name_to_category[category_name]["id"])
+                        else:
+                            category_id = next_category_id
+                            category = {}
+                            category["id"] = category_id
+                            category["name"] = category_name
+                            category_name_to_category[category_name] = category
+                            next_category_id += 1
+
+                        # Create an annotation
+                        ann = {}
+                        ann["id"] = im["id"] + "_" + str(i)
+                        ann["image_id"] = im["id"]
+                        ann["category_id"] = category_id
+                        ann["confidence"] = detection["conf"]
+                        ann["max_confidence"] = entry["max_detection_conf"]
+                        ann["isempty"] = False
+
+                        if category_id != 0:
+                            ann["bbox"] = detection["bbox"]
+                            # MegaDetector: [x,y,width,height]
+                            # (normalized, origin upper-left)
+                            # CCT: [x,y,width,height]
+                            # (absolute, origin upper-left)
+                            ann["bbox"][0] = ann["bbox"][0] * im["width"]
+                            ann["bbox"][1] = ann["bbox"][1] * im["height"]
+                            ann["bbox"][2] = ann["bbox"][2] * im["width"]
+                            ann["bbox"][3] = ann["bbox"][3] * im["height"]
+                        else:
+                            assert detection["bbox"] == [0, 0, 0, 0]
+
+                        annotations.append(ann)
+
+                else:
+                    ann = {}
+                    ann["id"] = im["id"] + "_0"
+                    ann["image_id"] = im["id"]
+                    ann["category_id"] = 0
+                    ann["isempty"] = True
+                    annotations.append(ann)
 
         else:
             print("Error on file %s" % entry["file"])
@@ -163,7 +169,8 @@ def md_to_coco_ct(md_result: MDResult) -> COCOResult:
 def coco_ct_to_ls(
     coco_result: COCOResult, exif_tab: pd.DataFrame,
     conf_threshold: float = 0.1, write: bool = False,
-    image_root_url: str = "/data/local-files/?d="
+    image_root_url: str = "/data/local-files/?d=",
+    repeat: bool = False
 ) -> list:
     """Convert coco_result CT labeling to Label Studio JSON.
 
@@ -235,40 +242,52 @@ def coco_ct_to_ls(
             score_table_unique.file == images[key]["file_name"]
         ]
 
-        if filtered.shape[0] == 0:
-
+        if np.isnan(filtered["conf"]).all():
+            
             file_name = images[key]["file_name"]
             print(f"skipping file {file_name}")
-
+        
         else:
 
-            images[key]["sequence_id"] = (
-                filtered["MakerNotes:Sequence"].iloc[0])
-            images[key]["sequence_nb"] = (
-                filtered["MakerNotes:EventNumber"].iloc[0])
-            images[key]["dir"] = filtered["File:Directory"].iloc[0]
+            if filtered.shape[0] == 0:
 
-            image_seq_id = images[key]["sequence_id"]
-            image_seq_number = images[key]["sequence_nb"]
-            image_dir = images[key]["dir"]
+                file_name = images[key]["file_name"]
+                print(f"skipping file {file_name}")
 
-            if image_seq_id == "0 0":
-                subset = score_table_unique[
-                    score_table_unique.file == images[key]["file_name"]
-                ]
             else:
-                query = (f"`MakerNotes:EventNumber` == {image_seq_number} " +
-                         f"and `File:Directory` == '{image_dir}' " +
-                         f"and `MakerNotes:Sequence` != '0 0'")
-                subset = score_table.query(query)
 
+                file_name = images[key]["file_name"]
+                # print(f"Processing file {file_name}") 
+                # print(filtered)               
 
+                images[key]["sequence_id"] = (
+                    filtered["MakerNotes:Sequence"].iloc[0])
+                images[key]["sequence_nb"] = (
+                    filtered["MakerNotes:EventNumber"].iloc[0])
+                images[key]["dir"] = filtered["File:Directory"].iloc[0]
 
-            if subset.shape[0] == 0:
-                images[key]["max_sequence_conf"] = 0
-            else:
-                assert subset["file"].drop_duplicates().shape[0] <= 5
-                images[key]["max_sequence_conf"] = np.nanmax(subset["conf"])
+                image_seq_id = images[key]["sequence_id"]
+                image_seq_number = images[key]["sequence_nb"]
+                image_dir = images[key]["dir"]
+
+                if image_seq_id == "0 0":
+                    subset = score_table_unique[
+                        score_table_unique.file == images[key]["file_name"]
+                    ]
+                else:
+                    query = (f"`MakerNotes:EventNumber` == {image_seq_number} " +
+                             f"and `File:Directory` == '{image_dir}' " +
+                             f"and `MakerNotes:Sequence` != '0 0'")
+                    # print(query)
+                    subset = score_table.query(query)
+
+                if subset.shape[0] == 0:
+                    images[key]["max_sequence_conf"] = 0
+                else:
+                    assert subset["file"].drop_duplicates().shape[0] <= 5
+                    images[key]["max_sequence_conf"] = np.nanmax(subset["conf"])
+
+    print("Here 1")
 
     for i, annotation in enumerate(tqdm(coco_result.coco_annotations())):
 
@@ -327,7 +346,10 @@ def coco_ct_to_ls(
 
         if write:
             base_path = coco_result.root + coco_result.folder
-            output_ls = coco_result.folder + "_output_ls.json"
+            if repeat:
+                output_ls = coco_result.folder + "_output_ls_norepeats.json"
+            else:
+                output_ls = coco_result.folder + "_output_ls.json"
             print(f"Saving {task_len} tasks to Label Studio JSON " +
                   f"file {output_ls}")
             with open(output_ls, "w") as out:

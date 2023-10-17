@@ -23,6 +23,6 @@ def test_pipeline():
 
     with open("tests/test_images/test_folder_output_ls.json", "r") as f:
         ls_test = json.loads(f.read())
-    ls = coco_ct_to_ls(coco_res, res_tab, write=False)
+    ls = coco_ct_to_ls(coco_res, res_tab, write=False, repeat=False)
     assert isinstance(ls, list)
     assert ls == ls_test

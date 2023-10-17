@@ -34,6 +34,7 @@ def mdtools():
 @click.option("--write-coco", is_flag=True)
 @click.option("--write-csv", is_flag=True)
 @click.option("--write-ls", is_flag=True)
+@click.option("--repeat", is_flag=True)
 def convert(
     output_format,
     md_json,
@@ -42,7 +43,8 @@ def convert(
     image_root_url,
     write_coco,
     write_csv,
-    write_ls
+    write_ls,
+    repeat
 ):
     """Convert MD results to different formats."""
     # First, create object
@@ -51,25 +53,27 @@ def convert(
 
     if output_format == "cct":
 
-        coco_path_out = md_result.make_coco_write_path()
+        coco_path_out = md_result.make_coco_write_path(repeat=repeat)
         cct = mdc.md_to_coco_ct(md_result)
 
         if write_coco:
-            coco_path_out = cct.make_coco_write_path()
+            coco_path_out = cct.make_coco_write_path(repeat=repeat)
+
+            print(coco_path_out)
 
             if os.path.isfile(coco_path_out):
                 print(f"File {coco_path_out} already exist, " +
                       "overwriting file")
 
-            cct.to_json()
+            cct.to_json(repeat=repeat)
         else:
             print(cct)
 
     elif output_format == "ls":
 
-        coco_path_out = md_result.make_coco_write_path()
-        ls_path_out = md_result.make_ls_write_path()
-        csv_path_out = md_result.make_csv_write_path()
+        coco_path_out = md_result.make_coco_write_path(repeat=repeat)
+        ls_path_out = md_result.make_ls_write_path(repeat=repeat)
+        csv_path_out = md_result.make_csv_write_path(repeat=repeat)
 
         if write_coco:
             if os.path.isfile(coco_path_out):
@@ -92,7 +96,7 @@ def convert(
             if os.path.isfile(csv_path_out):
                 print(f"File {csv_path_out} already exist, " +
                       "overwriting file")
-            tab = mdt.tabulate_md(md_result, write=write_csv)
+            tab = mdt.tabulate_md(md_result, write=write_csv, repeat=repeat)
         else:
             if os.path.isfile(csv_path_out):
                 print(f"File {csv_path_out} already exist: " +
@@ -106,7 +110,7 @@ def convert(
                 print(f"File {ls_path_out} already exist, " +
                       "overwriting file")
             ls = mdc.coco_ct_to_ls(cct, tab, conf_threshold, write_ls,
-                                   image_root_url)
+                                   image_root_url, repeat)
         else:
             if os.path.isfile(ls_path_out):
                 print(f"File {ls_path_out} already exist: " +
@@ -124,9 +128,10 @@ def convert(
 @mdtools.command("readexif")
 @click.argument("md_json", type=click.Path(exists=True))
 @click.option("-ws", "--write-csv", help="", default=True, show_default=True)
-def readexif(md_json, write_csv):
+@click.option("--repeat", is_flag=True)
+def readexif(md_json, write_csv, repeat):
     """Read exif from string filepath."""
-    mdr.read_exif_from_md(md_json, write=write_csv)
+    mdr.read_exif_from_md(md_json, write=write_csv, repeat=repeat)
 
 @mdtools.command("postprocess")
 @click.argument("ls_json", type=click.Path(exists=True))
@@ -136,9 +141,10 @@ def post_process(ls_json, write_csv):
 
     print(ls_json)
 
-    base = mdl.get_name(ls_json)
-    test = mdl.post_process_annotations(ls_json)
+    df = mdl.post_process_annotations(ls_json)
+    base = mdl.get_name(df)
+    
     if write_csv:
-        test.to_csv(f"{base}_output.csv", index=False)
+        df.to_csv(f"{base}_output.csv", index=False)
 
     pass

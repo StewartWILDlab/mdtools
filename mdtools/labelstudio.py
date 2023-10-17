@@ -3,6 +3,7 @@
 TODO.
 """
 
+from datetime import datetime
 import pandas as pd
 import ast
 import json
@@ -10,6 +11,8 @@ import os
 
 
 def post_process_annotations(ls_json, data_str="data/local-files/?d="):
+
+    c=0
 
     with open(ls_json, "r") as f:
         data = f.read()
@@ -20,95 +23,180 @@ def post_process_annotations(ls_json, data_str="data/local-files/?d="):
     for ann in ls:
 
         all_bb = pd.DataFrame()
+        bb = None
 
-        assert ann["total_predictions"] == 1
-        assert ann["total_annotations"] == 1
-        assert ann["cancelled_annotations"] == 0
+        # print(ann)
 
-        for bb in ann["annotations"]:
+        if ann["total_predictions"] != 0:
 
-            if bb["result"]: # actual validated bbs
-                bb = (
-                    pd.json_normalize(bb["result"], sep = "_", max_level=1)
-                    .assign(source_file = "/".join(ann["data"]["image"]
-                        .replace(data_str, "").strip("/").split('/')[1:]))
-                    .rename(columns={'from_name': 'variable'})
-                )
-                bb["label_temp"] = (
-                    [val[0] if isinstance(val, list) else "" for val in bb["value_rectanglelabels"]]
-                )
-                bb["tags_temp"] = (
-                    [val[0] if isinstance(val, list) else "" for val in bb["value_choices"]]
-                )
-                bb["tag"] = (
-                    [bb['label_temp'][i] if bb['label_temp'][i] != "" else bb['tags_temp'][i] 
-                    for i in range(bb.shape[0])]    
-                )
+            assert ann["total_predictions"] == 1
+            assert ann["total_annotations"] == 1
+            assert ann["cancelled_annotations"] == 0
 
-                bb = bb.drop(columns=['value_rectanglelabels', 'value_choices', 
-                    'value_rotation', 'image_rotation',# 'type',
-                    'label_temp', 'tags_temp'])
+            for bb in ann["annotations"]:
 
-                # Modify the bb table for new manual annotations
-                if "manual" in list(bb['origin']):
-                    
-                    path_split = os.path.sep.join(bb.source_file[0].split(".")[0].split(os.path.sep)[1:])
-                    
-                    source_file_id = (path_split
-                        .replace("\\", "/")
-                        .replace("/", "_")
-                        .replace(" ", "_"))
-                    # print(source_file_id)
-                    
-                    # m_counter = None
-                    m_counter = 0
-                    the_id = None
-                    
-                    for index, row in bb.iterrows():
+                # if bb["parent_prediction"] == None:
+                #     print("here")
+
+                if bb["result"]: # actual validated bbs
+
+                    # print("validated bbs")
+
+                    bb = (
+                        pd.json_normalize(bb["result"], sep = "_", max_level=1)
+                        .assign(source_file = "/".join(ann["data"]["image"]
+                            .replace(data_str, "").strip("/").split('/')[1:]))
+                        .rename(columns={'from_name': 'variable'})
+                    )
+                    bb["label_temp"] = (
+                        [val[0] if isinstance(val, list) else "" for val in bb["value_rectanglelabels"]]
+                    )
+                    bb["tags_temp"] = (
+                        [val[0] if isinstance(val, list) else "" for val in bb["value_choices"]]
+                    )
+                    bb["tag"] = (
+                        [bb['label_temp'][i] if bb['label_temp'][i] != "" else bb['tags_temp'][i] 
+                        for i in range(bb.shape[0])]    
+                    )
+
+                    bb = bb.drop(columns=['value_rectanglelabels', 'value_choices', 
+                        'value_rotation', 'image_rotation',# 'type',
+                        'label_temp', 'tags_temp'])
+
+                    # Modify the bb table for new manual annotations
+                    if "manual" in list(bb['origin']):
                         
-                        if row['origin'] != 'manual':
-                            pass
+                        path_split = os.path.sep.join(bb.source_file[0].split(".")[0].split(os.path.sep)[1:])
                         
-                        elif row['origin'] == 'manual':
+                        source_file_id = (path_split
+                            .replace("\\", "/")
+                            .replace("/", "_")
+                            .replace(" ", "_"))
+                        # print(source_file_id)
+                        
+                        # m_counter = None
+                        m_counter = 0
+                        the_id = None
+                        
+                        for index, row in bb.iterrows():
                             
-                            if the_id is None:
-                                the_id = row['id']
+                            if row['origin'] != 'manual':
+                                pass
+                            
+                            elif row['origin'] == 'manual':
+                                
+                                if the_id is None:
+                                    the_id = row['id']
 
-                            if the_id == row['id']:
-                                bb.loc[index, 'id'] = source_file_id + '_M' + str(m_counter)
-                            else:
-                                # print(m_counter)
-                                m_counter += 1
-                                bb.loc[index, 'id'] = source_file_id + '_M' + str(m_counter)
-                                the_id = row['id']
+                                if the_id == row['id']:
+                                    bb.loc[index, 'id'] = source_file_id + '_M' + str(m_counter)
+                                else:
+                                    # print(m_counter)
+                                    m_counter += 1
+                                    bb.loc[index, 'id'] = source_file_id + '_M' + str(m_counter)
+                                    the_id = row['id']
+
+                        # print(bb)
+
+                elif bb["prediction"]:
+
+                    # print("********")
+                    # print(bb)
+                    # print("********")
+
+                    pred = bb["prediction"]
+
+                    # print("********")
+                    # print(pred)
+                    # print("********")
+
+                    if pred["result"]:
+
+                        # print("********")
+                        # print("pred results, deleted bbs")
+                        # print(ann)
+                        # print("********")
+
+                        # deleted bbs $$$ => check if prediction is empty first THEN if it is, assign as empty somehow?
+
+                        bb = (
+                            pd.json_normalize(bb["prediction"]["result"], sep = "_", max_level=1)
+                            .assign(source_file = "/".join(ann["data"]["image"]
+                            .replace(data_str, "").strip("/").split('/')[1:]))
+                            .rename(columns={'from_name': 'variable'})
+                        )
+
+                        bb = bb.drop(columns=[
+                            'value_rotation', 'image_rotation',# 'type', 'value_rectanglelabels',
+                            ])
+
+                        # print(bb)
+
+                    else:
+
+                        # print("********")
+                        # print("empty pred results")
+                        # print(ann)
+                        # c+=1
+                        # print(c)
+                        # print("********")
+
+                        bb = (
+                            pd.json_normalize(bb, sep = "_", max_level=1)
+                            .assign(source_file = "/".join(ann["data"]["image"]
+                                .replace(data_str, "").strip("/").split('/')[1:]))
+                            .rename(columns={'from_name': 'variable'})
+                        )[['id', 'source_file']]
+
+
+                        # print(bb)
+
+                else: # actually empty images
+
+                    # print("#########")
+                    # print("empty")
+                    # print(bb)
+                    # print("#########")
+
+                    bb = (
+                        pd.json_normalize(bb, sep = "_", max_level=1)
+                        .assign(source_file = "/".join(ann["data"]["image"]
+                            .replace(data_str, "").strip("/").split('/')[1:]))
+                        .rename(columns={'from_name': 'variable'})
+                    )[['id', 'source_file']]
 
                     # print(bb)
 
-            elif bb["prediction"]["result"]: # deleted bbs
+                all_bb = pd.concat([all_bb, bb])
 
-                bb = (
-                    pd.json_normalize(bb["prediction"]["result"], sep = "_", max_level=1)
-                    .assign(source_file = "/".join(ann["data"]["image"]
-                        .replace(data_str, "").strip("/").split('/')[1:]))
-                    .rename(columns={'from_name': 'variable'})
-                )
+            all_ann = pd.concat([all_ann, all_bb])
 
-                bb = bb.drop(columns=[
-                    'value_rotation', 'image_rotation',# 'type', 'value_rectanglelabels',
-                    ])
+        else:
 
-            else: # actually empty images
+            print("********")
+            print("no predictions")
+            print(ann)
+            c+=1
+            print(c)
+            print("********")
 
-                bb = (
-                    pd.json_normalize(bb, sep = "_", max_level=1)
-                    .assign(source_file = "/".join(ann["data"]["image"]
-                        .replace(data_str, "").strip("/").split('/')[1:]))
-                    .rename(columns={'from_name': 'variable'})
-                )[['id', 'source_file']]
+            # print(bb)
 
-            all_bb = pd.concat([all_bb, bb])
+            # bb = (
+            #     pd.json_normalize(bb, sep = "_", max_level=1)
+            #     .assign(source_file = "/".join(ann["data"]["image"]
+            #         .replace(data_str, "").strip("/").split('/')[1:]))
+            #     .rename(columns={'from_name': 'variable'})
+            # )[['id', 'source_file']]
 
-        all_ann = pd.concat([all_ann, all_bb])
+            # bb = pd.DataFrame({
+            #     "id" : [ann['id']],
+            #     "source_file" : ["/".join(ann["data"]["image"].replace(data_str, "").strip("/").split('/')[1:])]
+            #     })
+
+            # print(bb)
+
+            # all_ann = pd.concat([all_ann, bb])
 
     if 'value_text' not in all_ann:
         all_ann['value_text'] = ''
@@ -116,13 +204,21 @@ def post_process_annotations(ls_json, data_str="data/local-files/?d="):
     # print(all_ann)
     return all_ann
 
-def get_name(ls_json):
+def get_name(df):
 
-    with open(ls_json, "r") as f:
-        data = f.read()
-    ls = json.loads(data)
+    # with open(df, "r") as f:
+    #     data = f.read()
+    # ls = json.loads(data)
 
-    return f"out_{ls[0]['id']}"
+    source_file_ex = df["source_file"].iloc[0]
+    print(source_file_ex)
+    proj = source_file_ex.split("/")[0]
+    print(proj)
+    dt = datetime.now().strftime("%Y_%m_%d-%p%I_%M_%S")
+
+    print(df.head())
+
+    return f"{proj}_{dt}"
 
 # def clean_csv_output(ls_csv, out_file, data_str="data/local-files/?d=", write=True):
 
