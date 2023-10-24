@@ -170,7 +170,8 @@ def coco_ct_to_ls(
     coco_result: COCOResult, exif_tab: pd.DataFrame,
     conf_threshold: float = 0.1, write: bool = False,
     image_root_url: str = "/data/local-files/?d=",
-    repeat: bool = False
+    repeat: bool = False,
+    ls_path_out: str ="",
 ) -> list:
     """Convert coco_result CT labeling to Label Studio JSON.
 
@@ -345,14 +346,14 @@ def coco_ct_to_ls(
         task_len = len(tasks)
 
         if write:
-            base_path = coco_result.root + coco_result.folder
-            if repeat:
-                output_ls = coco_result.folder + "_output_ls_norepeats.json"
-            else:
-                output_ls = coco_result.folder + "_output_ls.json"
+            # base_path = coco_result.root + coco_result.folder
+            # if repeat:
+            #     output_ls = coco_result.folder + "_output_ls_norepeats.json"
+            # else:
+            #     output_ls = coco_result.folder + "_output_ls.json"
             print(f"Saving {task_len} tasks to Label Studio JSON " +
-                  f"file {output_ls}")
-            with open(output_ls, "w") as out:
+                  f"file {ls_path_out}")
+            with open(ls_path_out, "w") as out:
                 json.dump(tasks, out)
 
         return tasks
