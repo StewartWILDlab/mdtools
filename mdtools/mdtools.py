@@ -53,8 +53,6 @@ def convert(
     root = os.path.dirname(md_json)
     md_result = MDResult(root, directory, md_json)
 
-    print(output_folder)
-
     if output_format == "cct":
 
         coco_path_out = md_result.make_coco_write_path(output_folder=output_folder, repeat=repeat)
