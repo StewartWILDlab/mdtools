@@ -58,13 +58,11 @@ class MDResult:
             name = out_dir + "_output_coco_norepeats.json"
         else:
             name = out_dir + "_output_coco.json"
-        print("test: "  +  output_folder)
-        print("test: "  +  out_dir)
         return name
 
     def make_ls_write_path(self, output_folder:str, repeat: bool) -> str:
         """Create the path to write coco out as json."""
-        out_dir = os.path.join(output_folder, self.folder)
+        out_dir = os.path.join(output_folder, os.path.basename(self.folder))
         if repeat:
             name = out_dir + "_output_ls_norepeats.json"
         else:
@@ -73,7 +71,7 @@ class MDResult:
 
     def make_csv_write_path(self, output_folder:str, repeat: bool) -> str:
         """Create the path to write coco out as json."""
-        out_dir = os.path.join(output_folder, self.folder)
+        out_dir = os.path.join(output_folder, os.path.basename(self.folder))
         if repeat:
             name = out_dir + "_output_norepeats.csv"
         else:
