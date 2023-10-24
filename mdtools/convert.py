@@ -167,11 +167,10 @@ def md_to_coco_ct(md_result: MDResult) -> COCOResult:
 
 
 def coco_ct_to_ls(
-    coco_result: COCOResult, exif_tab: pd.DataFrame,
+    coco_result: COCOResult, exif_tab: pd.DataFrame, ls_path_out: str,
     conf_threshold: float = 0.1, write: bool = False,
     image_root_url: str = "/data/local-files/?d=",
-    repeat: bool = False,
-    ls_path_out: str ="",
+    repeat: bool = False
 ) -> list:
     """Convert coco_result CT labeling to Label Studio JSON.
 

@@ -111,7 +111,7 @@ def convert(
             if os.path.isfile(ls_path_out):
                 print(f"File {ls_path_out} already exist, " +
                       "overwriting file")
-            ls = mdc.coco_ct_to_ls(cct, tab, conf_threshold, write_ls,
+            ls = mdc.coco_ct_to_ls(cct, tab, ls_path_out, conf_threshold, write_ls,
                                    image_root_url, repeat)
         else:
             if os.path.isfile(ls_path_out):
