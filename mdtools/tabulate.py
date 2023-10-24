@@ -11,7 +11,8 @@ from mdtools.readexif import read_exif_from_md
 
 
 def tabulate_md(md_result: MDResult, include_exif: bool = True,
-                batchsize: int = 100, write=False, repeat: bool = False) -> pd.DataFrame:
+                batchsize: int = 100, write=False, repeat: bool = False,
+                output_folder: str) -> pd.DataFrame:
     """Convert md to csv."""
     dat = pd.json_normalize(md_result.md_images())
     full_data = pd.DataFrame()
@@ -59,7 +60,7 @@ def tabulate_md(md_result: MDResult, include_exif: bool = True,
                              on="source_file")
 
     if write:
-        full_data.to_csv(md_result.make_csv_write_path(repeat = repeat), index=False)
+        full_data.to_csv(md_result.make_csv_write_path(output_folder=output_folder, repeat = repeat), index=False)
 
     return full_data
 

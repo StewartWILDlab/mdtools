@@ -24,6 +24,7 @@ def mdtools():
                 case_sensitive=False))
 @click.argument("md_json", type=click.Path(exists=True))
 @click.argument("directory", type=click.STRING)
+@click.argument("output_folder", type=click.Path(exists=True))
 @click.option("-ct", "--conf-threshold", default=0.1,
               help="Threshold under which predictions are removed",
               type=click.FLOAT,
@@ -39,6 +40,7 @@ def convert(
     output_format,
     md_json,
     directory,
+    output_folder,
     conf_threshold,
     image_root_url,
     write_coco,
@@ -53,11 +55,11 @@ def convert(
 
     if output_format == "cct":
 
-        coco_path_out = md_result.make_coco_write_path(repeat=repeat)
+        coco_path_out = md_result.make_coco_write_path(output_folder=output_folder, repeat=repeat)
         cct = mdc.md_to_coco_ct(md_result)
 
         if write_coco:
-            coco_path_out = cct.make_coco_write_path(repeat=repeat)
+            coco_path_out = cct.make_coco_write_path(output_folder=output_folder, repeat=repeat)
 
             print(coco_path_out)
 
@@ -65,22 +67,22 @@ def convert(
                 print(f"File {coco_path_out} already exist, " +
                       "overwriting file")
 
-            cct.to_json(repeat=repeat)
+            cct.to_json(output_folder=output_folder, repeat=repeat)
         else:
             print(cct)
 
     elif output_format == "ls":
 
-        coco_path_out = md_result.make_coco_write_path(repeat=repeat)
-        ls_path_out = md_result.make_ls_write_path(repeat=repeat)
-        csv_path_out = md_result.make_csv_write_path(repeat=repeat)
+        coco_path_out = md_result.make_coco_write_path(output_folder=output_folder, repeat=repeat)
+        ls_path_out = md_result.make_ls_write_path(output_folder=output_folder, repeat=repeat)
+        csv_path_out = md_result.make_csv_write_path(output_folder=output_folder, repeat=repeat)
 
         if write_coco:
             if os.path.isfile(coco_path_out):
                 print(f"File {coco_path_out} already exist, " +
                       "overwriting file")
             cct = mdc.md_to_coco_ct(md_result)
-            cct.to_json(repeat=repeat)
+            cct.to_json(output_folder=output_folder, repeat=repeat)
         else:
             if os.path.isfile(coco_path_out):
                 print(f"File {coco_path_out} already exist: " +
@@ -96,7 +98,7 @@ def convert(
             if os.path.isfile(csv_path_out):
                 print(f"File {csv_path_out} already exist, " +
                       "overwriting file")
-            tab = mdt.tabulate_md(md_result, write=write_csv, repeat=repeat)
+            tab = mdt.tabulate_md(md_result, write=write_csv, repeat=repeat, output_folder=output_folder)
         else:
             if os.path.isfile(csv_path_out):
                 print(f"File {csv_path_out} already exist: " +
@@ -127,11 +129,12 @@ def convert(
 
 @mdtools.command("readexif")
 @click.argument("md_json", type=click.Path(exists=True))
+@click.argument("output_folder", type=click.Path(exists=True))
 @click.option("-ws", "--write-csv", help="", default=True, show_default=True)
 @click.option("--repeat", is_flag=True)
-def readexif(md_json, write_csv, repeat):
+def readexif(md_json, output_folder, write_csv, repeat):
     """Read exif from string filepath."""
-    mdr.read_exif_from_md(md_json, write=write_csv, repeat=repeat)
+    mdr.read_exif_from_md(md_json, write=write_csv, repeat=repeat, output_folder=output_folder)
 
 @mdtools.command("postprocess")
 @click.argument("ls_json", type=click.Path(exists=True))

@@ -51,31 +51,31 @@ class MDResult:
         return ("MD Results in MD format: \n" +
                 f"  * MD file @ '{self.md_filepath}'")
 
-    def make_coco_write_path(self, repeat: bool) -> str:
+    def make_coco_write_path(self, output_folder:str, repeat: bool) -> str:
         """Create the path to write coco out as json."""
-        image_base_dir = os.path.join(self.root, self.folder)
+        out_dir = os.path.join(output_folder, self.folder)
         if repeat:
-            name = image_base_dir + "_output_coco_norepeats.json"
+            name = out_dir + "_output_coco_norepeats.json"
         else:
-            name = image_base_dir + "_output_coco.json"
+            name = out_dir + "_output_coco.json"
         return name
 
-    def make_ls_write_path(self, repeat: bool) -> str:
+    def make_ls_write_path(self, output_folder:str, repeat: bool) -> str:
         """Create the path to write coco out as json."""
-        image_base_dir = os.path.join(self.root, self.folder)
+        out_dir = os.path.join(output_folder, self.folder)
         if repeat:
-            name = image_base_dir + "_output_ls_norepeats.json"
+            name = out_dir + "_output_ls_norepeats.json"
         else:
-            name = image_base_dir + "_output_ls.json"
+            name = out_dir + "_output_ls.json"
         return name
 
-    def make_csv_write_path(self, repeat: bool) -> str:
+    def make_csv_write_path(self, output_folder:str, repeat: bool) -> str:
         """Create the path to write coco out as json."""
-        image_base_dir = os.path.join(self.root, self.folder)
+        out_dir = os.path.join(output_folder, self.folder)
         if repeat:
-            name = image_base_dir + "_output_norepeats.csv"
+            name = out_dir + "_output_norepeats.csv"
         else:
-            name = image_base_dir + "_output.csv"
+            name = out_dir + "_output.csv"
         return name
 
     # Data methods
@@ -122,9 +122,9 @@ class COCOResult(MDResult):
                f" * COCO file @ '{self.coco_filepath}'")
         return rep
 
-    def to_json(self, repeat: bool) -> bool:
+    def to_json(self, output_folder:str, repeat: bool) -> bool:
         """Write to JSON."""
-        path = self.make_coco_write_path(repeat=repeat)
+        path = self.make_coco_write_path(output_folder=output_folder, repeat=repeat)
         self.coco_filepath = path
         self.coco_file: str = os.path.basename(path)
         print(

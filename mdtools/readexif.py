@@ -27,8 +27,8 @@ DEFAULT_TAGS = [
 
 
 def read_exif_from_md(md_result: MDResult or str, tags: list = DEFAULT_TAGS,
-                      batchsize: int = 100, write: bool = False, repeat: bool = False
-                      ) -> pd.DataFrame:
+                      batchsize: int = 100, write: bool = False, repeat: bool = False,
+                      output_folder: str) -> pd.DataFrame:
     """Extract EXIF information from the md_result.
 
     Accepts string or MDResult object.
@@ -51,7 +51,7 @@ def read_exif_from_md(md_result: MDResult or str, tags: list = DEFAULT_TAGS,
         md = md_result.md_data
         folder = md_result.folder
         root = md_result.root
-        name_out = md_result.make_csv_write_path(repeat = repeat)
+        name_out = md_result.make_csv_write_path(output_folder=output_folder, repeat = repeat)
         base_path = os.path.join(os.path.dirname(name_out), folder)
 
     images = md["images"]

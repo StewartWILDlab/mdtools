@@ -287,7 +287,7 @@ def coco_ct_to_ls(
                     assert subset["file"].drop_duplicates().shape[0] <= 5
                     images[key]["max_sequence_conf"] = np.nanmax(subset["conf"])
 
-    print("Here 1")
+    # print("Here 1")
 
     for i, annotation in enumerate(tqdm(coco_result.coco_annotations())):
 
