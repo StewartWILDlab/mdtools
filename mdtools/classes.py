@@ -53,12 +53,12 @@ class MDResult:
 
     def make_coco_write_path(self, output_folder:str, repeat: bool) -> str:
         """Create the path to write coco out as json."""
-        out_dir = os.path.join(output_folder, self.folder)
+        out_dir = os.path.join(output_folder, os.path.basename(self.folder))
         if repeat:
             name = out_dir + "_output_coco_norepeats.json"
         else:
             name = out_dir + "_output_coco.json"
-        print("test: "  +  self.folder)
+        print("test: "  +  name)
         return name
 
     def make_ls_write_path(self, output_folder:str, repeat: bool) -> str:
