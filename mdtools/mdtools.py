@@ -80,7 +80,7 @@ def convert(
                 print(f"File {coco_path_out} already exist, " +
                       "overwriting file")
             cct = mdc.md_to_coco_ct(md_result)
-            cct.to_json()
+            cct.to_json(repeat=repeat)
         else:
             if os.path.isfile(coco_path_out):
                 print(f"File {coco_path_out} already exist: " +
