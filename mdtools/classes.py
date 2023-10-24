@@ -58,7 +58,7 @@ class MDResult:
             name = out_dir + "_output_coco_norepeats.json"
         else:
             name = out_dir + "_output_coco.json"
-        print("test" + name)
+        print("test: "  +  output_folder)
         return name
 
     def make_ls_write_path(self, output_folder:str, repeat: bool) -> str:
