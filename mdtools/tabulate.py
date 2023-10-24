@@ -12,7 +12,7 @@ from mdtools.readexif import read_exif_from_md
 
 def tabulate_md(md_result: MDResult, include_exif: bool = True,
                 batchsize: int = 100, write=False, repeat: bool = False,
-                output_folder: str) -> pd.DataFrame:
+                output_folder: str = "") -> pd.DataFrame:
     """Convert md to csv."""
     dat = pd.json_normalize(md_result.md_images())
     full_data = pd.DataFrame()
