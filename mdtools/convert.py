@@ -300,6 +300,8 @@ def coco_ct_to_ls(
         if "NonWildlife" in file_name:
             print(f"skipping file {file_name}")
             continue
+        else:
+            print(f"Processing file {file_name}")
 
         image_conf = image["max_sequence_conf"]
 
