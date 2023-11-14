@@ -297,11 +297,9 @@ def coco_ct_to_ls(
         ## Skip NonWildlife Images for second retrieval
         ## Only for second deployment/retrieval at the moment
         if "NonWildlife" in image_id:
-            print(f"skipping annotation in image {image_id}")
+            # print(f"skipping annotation in image {image_id}")
             continue
-        else:
-            print(f"Processing annotation in image {image_id}")
-
+            
         image_conf = image["max_sequence_conf"]
 
         bbox |= "bbox" in annotation
