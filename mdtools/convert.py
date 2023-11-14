@@ -298,7 +298,7 @@ def coco_ct_to_ls(
         ## Only foe second deployment/retrieval at the moment
         image_file_name = image["file_name"]
         if "NonWildlife" in file_name:
-            print(f"skipping file {file_name}")
+            # print(f"skipping file {file_name}")
             continue
         else:
             print(f"Processing file {file_name}")
