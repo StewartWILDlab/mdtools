@@ -295,8 +295,10 @@ def coco_ct_to_ls(
         image = images[image_id]
 
         ## Skip NonWildlife Images for second retrieval
-        if "NonWildlife" in images["file_name"]:
-            print(f"skipping file {images["file_name"]}")
+        ## Only foe second deployment/retrieval at the moment
+        image_file_name = images["file_name"]
+        if "NonWildlife" in file_name:
+            print(f"skipping file {file_name}")
             continue
 
         image_conf = image["max_sequence_conf"]
