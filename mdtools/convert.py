@@ -294,6 +294,11 @@ def coco_ct_to_ls(
         image_id = annotation["image_id"]
         image = images[image_id]
 
+        ## Skip NonWildlife Images for second retrieval
+        if "NonWildlife" in images["file_name"]:
+            print(f"skipping file {images["file_name"]}")
+            continue
+
         image_conf = image["max_sequence_conf"]
 
         bbox |= "bbox" in annotation
@@ -356,5 +361,6 @@ def coco_ct_to_ls(
                 json.dump(tasks, out)
 
         return tasks
+
     else:
         print("ERROR: No labels converted")
