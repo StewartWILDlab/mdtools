@@ -81,7 +81,7 @@ def md_to_coco_ct(md_result: MDResult) -> COCOResult:
             detections = entry["detections"]
 
             if detections is None:
-
+                print("None detections on file")
                 print(entry)
 
             else:
@@ -299,7 +299,7 @@ def coco_ct_to_ls(
         if "NonWildlife" in image_id:
             # print(f"skipping annotation in image {image_id}")
             continue
-            
+
         image_conf = image["max_sequence_conf"]
 
         bbox |= "bbox" in annotation
