@@ -99,17 +99,40 @@ class MDResult:
 class COCOResult(MDResult):
     """Megadetector coco class (wrap around a json)."""
 
-    def __init__(self, root: str, folder: str, md_file: str,
-                 coco_data: dict = {}):
+    def __init__(self, root: str, folder: str, file: str,
+                 coco_data: dict = {}, from_md = True):
         """Initialize the class."""
-        super().__init__(root, folder, md_file)
 
-        # Provided
-        self.coco_data: dict = coco_data
+        if from_md:
+            super().__init__(root, folder, file)
+            self.coco_filepath: str = ""
+            self.coco_file: str = ""
+            self.coco_data: dict = coco_data
+        else:
+            if not os.path.isdir(root):
+                raise Exception("Result root must be a directory.")
 
-        # Computed
-        self.coco_filepath: str = ""
-        self.coco_file: str = ""
+            # Provided
+            self.root: str = root
+            self.folder: str = folder
+            self.coco_file: str = file
+
+            # Computed
+            self.coco_filepath: str = os.path.join(self.root, self.coco_file)
+
+            # Properties
+            self._default_md_categories = {'1': 'animal',
+                                           '2': 'person',
+                                           '3': 'vehicle'}
+
+            # Created
+            with open(self.coco_filepath, "r") as f:
+                coco_data = json.loads(f.read())
+            self.coco_data: dict = coco_data
+
+            self.md_filepath: str = ""
+            self.md_file: str = ""
+
 
         # TODO: if empty, maybe load from file?
 

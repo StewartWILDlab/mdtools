@@ -8,6 +8,7 @@ from mdtools import convert as mdc
 from mdtools import readexif as mdr
 from mdtools import tabulate as mdt
 from mdtools import labelstudio as mdl
+from mdtools import crop as mdcc
 from mdtools.classes import COCOResult, MDResult
 
 import pandas as pd
@@ -127,6 +128,35 @@ def convert(
         # mdc.md_to_csv(click.format_filename(md_json), read_exif, write_csv)
 
 
+@mdtools.command("crop")
+@click.argument("from_format", type=click.Choice(["md", "cct"],
+                case_sensitive=False))
+@click.argument("json", type=click.Path(exists=True))
+@click.argument("directory", type=click.STRING)
+@click.argument("output_folder", type=click.Path(exists=True))
+def crop(
+    from_format,
+    json,
+    directory,
+    output_folder
+):
+    """Crop MD or CCT results."""
+    print(from_format)
+    print(json)
+    print(directory)
+    print(output_folder)
+
+    # First, create object
+    root = os.path.dirname(json)
+    
+    if from_format == "md":
+        result = MDResult(root, directory, json)
+    elif from_format == "cct":
+        result = COCOResult(root, directory, json, from_md = False)
+
+    mdcc.crop_annotations(result, directory, output_folder)
+
+
 @mdtools.command("readexif")
 @click.argument("md_json", type=click.Path(exists=True))
 @click.argument("output_folder", type=click.Path(exists=True))
@@ -135,6 +165,7 @@ def convert(
 def readexif(md_json, output_folder, write_csv, repeat):
     """Read exif from string filepath."""
     mdr.read_exif_from_md(md_json, write=write_csv, repeat=repeat, output_folder=output_folder)
+
 
 @mdtools.command("postprocess")
 @click.argument("ls_json", type=click.Path(exists=True))
