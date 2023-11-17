@@ -22,7 +22,7 @@ def crop_annotations(
 	print(output_folder)
 	print(im_pd)
 
-	for i, ann in enumerate(tqdm(result.coco_annotations()[0:10])):
+	for i, ann in enumerate(tqdm(result.coco_annotations())):
 
 		if not ann["isempty"]:
 
