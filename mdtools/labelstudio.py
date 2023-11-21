@@ -4,7 +4,10 @@ TODO.
 """
 
 from datetime import datetime
+from tqdm import tqdm
+
 import pandas as pd
+
 import ast
 import json
 import os
@@ -20,7 +23,8 @@ def post_process_annotations(ls_json, data_str="data/local-files/?d="):
 
     all_ann = pd.DataFrame()
 
-    for ann in ls:
+    for i_ann, ann in enumerate(tqdm(ls)):
+    # for ann in ls:
 
         all_bb = pd.DataFrame()
         bb = None
@@ -216,7 +220,7 @@ def get_name(df):
     print(proj)
     dt = datetime.now().strftime("%Y_%m_%d-%p%I_%M_%S")
 
-    print(df.head())
+    # print(df.head())
 
     return f"{proj}_{dt}"
 

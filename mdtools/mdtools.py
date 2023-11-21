@@ -169,8 +169,9 @@ def readexif(md_json, output_folder, write_csv, repeat):
 
 @mdtools.command("postprocess")
 @click.argument("ls_json", type=click.Path(exists=True))
+@click.argument("output_folder", type=click.Path(exists=True))
 @click.option("--write-csv", is_flag=True)
-def post_process(ls_json, write_csv):
+def post_process(ls_json, output_folder, write_csv):
     """Post process json from label studio."""
 
     print(ls_json)
@@ -179,6 +180,6 @@ def post_process(ls_json, write_csv):
     base = mdl.get_name(df)
     
     if write_csv:
-        df.to_csv(f"{base}_output.csv", index=False)
+        df.to_csv(os.path.join(output_folder,f"{base}_output.csv"), index=False)
 
     pass
