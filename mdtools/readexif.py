@@ -46,6 +46,12 @@ def read_exif_from_md(md_result: MDResult or str, tags: list = DEFAULT_TAGS,
         base_name_out = os.path.join(os.path.dirname(md_result), folder)
         name_out = base_name_out + "_exif.csv"
 
+        print(folder)
+        print(root)
+        print(base_path)
+        print(base_name_out)
+        print(name_out)
+
     elif isinstance(md_result, MDResult):
 
         md = md_result.md_data
@@ -53,8 +59,6 @@ def read_exif_from_md(md_result: MDResult or str, tags: list = DEFAULT_TAGS,
         root = md_result.root
         name_out = md_result.make_csv_write_path(output_folder=output_folder, repeat = repeat)
         base_path = os.path.join(os.path.dirname(name_out), folder)
-
-    print(md_result.split("_"))
 
     images = md["images"]
     images_has_detect_key = ["detections" in img.keys() for img in images]
