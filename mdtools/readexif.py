@@ -63,6 +63,8 @@ def read_exif_from_md(md_result: MDResult or str, tags: list = DEFAULT_TAGS,
 
         filenames = [os.path.join(base_path, img["file"]) for img in batch]
 
+        print(filenames)
+
         with exiftool.ExifToolHelper() as et:
             tags_data = [et.get_tags(filename, tags)[0]
                          for filename in filenames]
