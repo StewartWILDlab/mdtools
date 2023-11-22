@@ -17,7 +17,6 @@ from label_studio_converter.imports.coco import new_task
 
 from mdtools.classes import COCOResult, MDResult
 from mdtools.cocoutils import create_coco_info_dict
-from mdtools.readexif import read_exif_from_md, DEFAULT_TAGS
 
 # TODO Add info + license dict argument
 
