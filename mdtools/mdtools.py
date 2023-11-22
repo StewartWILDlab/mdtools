@@ -159,12 +159,14 @@ def crop(
 
 @mdtools.command("readexif")
 @click.argument("md_json", type=click.Path(exists=True))
+@click.argument("input_folder", type=click.Path(exists=True))
 @click.argument("output_folder", type=click.Path(exists=True))
 @click.option("--write-csv", is_flag=True)
 @click.option("--repeat", is_flag=True)
-def readexif(md_json, output_folder, write_csv, repeat):
+def readexif(md_json, input_folder, output_folder,write_csv, repeat):
     """Read exif from string filepath."""
-    mdr.read_exif_from_md(md_json, write=write_csv, repeat=repeat, output_folder=output_folder)
+    mdr.read_exif_from_md(md_json, write=write_csv, repeat=repeat, output_folder=output_folder,
+        input_folder=input_folder)
 
 
 @mdtools.command("postprocess")
