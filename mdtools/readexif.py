@@ -42,15 +42,9 @@ def read_exif_from_md(md_result: MDResult or str, tags: list = DEFAULT_TAGS,
             md = json.loads(f.read())
         folder = os.path.basename(md_result).split("_")[0]
         root = os.path.dirname(md_result) + "/"
-        base_path = md_result.split("_")[0]
+        base_path = output_folder
         base_name_out = os.path.join(os.path.dirname(md_result), folder)
         name_out = base_name_out + "_exif.csv"
-
-        print(folder)
-        print(root)
-        print(base_path)
-        print(base_name_out)
-        print(name_out)
 
     elif isinstance(md_result, MDResult):
 
