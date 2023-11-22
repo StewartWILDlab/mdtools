@@ -46,6 +46,8 @@ def read_exif_from_md(md_result: MDResult or str, tags: list = DEFAULT_TAGS,
         base_name_out = os.path.join(os.path.dirname(md_result), folder)
         name_out = base_name_out + "_exif.csv"
 
+        print(base_path)
+
     elif isinstance(md_result, MDResult):
 
         md = md_result.md_data
@@ -62,6 +64,8 @@ def read_exif_from_md(md_result: MDResult or str, tags: list = DEFAULT_TAGS,
         batch = images[i: i + batchsize]
 
         filenames = [os.path.join(base_path, img["file"]) for img in batch]
+
+        print(filenames[0])
 
 
         with exiftool.ExifToolHelper() as et:
