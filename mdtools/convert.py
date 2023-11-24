@@ -141,6 +141,8 @@ def md_to_coco_ct(md_result: MDResult) -> COCOResult:
         else:
             print("Error on file %s" % entry["file"])
 
+    pil_image.close()
+
     print("Finished creating CCT dictionaries")
 
     # Create info struct
