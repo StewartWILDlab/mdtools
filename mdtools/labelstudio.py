@@ -177,12 +177,12 @@ def post_process_annotations(ls_json, data_str="data/local-files/?d="):
 
         else:
 
-            print("********")
-            print("no predictions")
-            print(ann)
+            # print("********")
+            # print("no predictions")
+            # print(ann)
             c+=1
-            print(c)
-            print("********")
+            # print(c)
+            # print("********")
 
             # print(bb)
 
