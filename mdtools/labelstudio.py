@@ -214,6 +214,8 @@ def get_name(df):
     #     data = f.read()
     # ls = json.loads(data)
 
+    print(df.head())
+
     source_file_ex = df["source_file"].iloc[0]
     print(source_file_ex)
     proj = source_file_ex.split("/")[0]
