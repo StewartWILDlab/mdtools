@@ -223,8 +223,10 @@ def get_name(df):
     # ls = json.loads(data)
 
     print(df.head())
-    column_name = "source_file"
-    source_file_ex = df.at[df[column_name].first_valid_index(), column_name]
+    column_name = "source_file_with_dep"
+    first_valid = df[column_name].first_valid_index()
+    print(first_valid)
+    source_file_ex = df.at[first_valid, column_name]
     print(source_file_ex)
     proj = source_file_ex.split("/")[0]
     print(proj)
