@@ -225,11 +225,13 @@ def get_name(df):
     print(df.head())
     column_name = "source_file_with_dep"
     col = df[column_name].tolist()
-    # first_valid = next(x for x in col if not isnan(x))
+    from math import isnan
+    first_valid = next(x for x in col if not isnan(x))
     print("&&&&&&&")
-    print(col)
+    # print(col)
     print(col[0])
     print(type(col[0]))
+    print(first_valid)
     print("&&&&&&&")
     source_file_ex = df.at[first_valid, column_name]
     print(source_file_ex)
