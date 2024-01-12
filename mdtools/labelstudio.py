@@ -50,6 +50,8 @@ def post_process_annotations(ls_json, data_str="data/local-files/?d="):
                         pd.json_normalize(bb["result"], sep = "_", max_level=1)
                         .assign(source_file = "/".join(ann["data"]["image"]
                             .replace(data_str, "").strip("/").split('/')[1:]))
+                        .assign(source_file_with_dep = "/".join(ann["data"]["image"]
+                                .replace(data_str, "").strip("/").split('/')[0:]))
                         .rename(columns={'from_name': 'variable'})
                     )
                     bb["label_temp"] = (
@@ -151,6 +153,8 @@ def post_process_annotations(ls_json, data_str="data/local-files/?d="):
                             pd.json_normalize(bb, sep = "_", max_level=1)
                             .assign(source_file = "/".join(ann["data"]["image"]
                                 .replace(data_str, "").strip("/").split('/')[1:]))
+                            .assign(source_file_with_dep = "/".join(ann["data"]["image"]
+                                .replace(data_str, "").strip("/").split('/')[0:]))
                             .rename(columns={'from_name': 'variable'})
                         )[['id', 'source_file']]
 
@@ -168,6 +172,8 @@ def post_process_annotations(ls_json, data_str="data/local-files/?d="):
                         pd.json_normalize(bb, sep = "_", max_level=1)
                         .assign(source_file = "/".join(ann["data"]["image"]
                             .replace(data_str, "").strip("/").split('/')[1:]))
+                        .assign(source_file_with_dep = "/".join(ann["data"]["image"]
+                                .replace(data_str, "").strip("/").split('/')[0:]))
                         .rename(columns={'from_name': 'variable'})
                     )[['id', 'source_file']]
 
@@ -218,9 +224,7 @@ def get_name(df):
 
     print(df.head())
 
-    dep = df["source_file_with_dep"].iloc[0]
-    source_file_ex = df["source_file_with_dep"].iloc[1]
-    print(dep)
+    source_file_ex = df["source_file"].iloc[0]
     print(source_file_ex)
     proj = source_file_ex.split("/")[0]
     print(proj)
