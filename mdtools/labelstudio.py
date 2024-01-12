@@ -226,7 +226,7 @@ def get_name(df):
     column_name = "source_file_with_dep"
     col = df[column_name].tolist()
     # from math import isnan
-    # first_valid = next(x for x in col if not isnan(x))
+    first_valid = next(x for x in col if not (x == "nan"))
     print("&&&&&&&")
     # print(col)
     print(col[0])
