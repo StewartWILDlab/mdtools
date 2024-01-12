@@ -225,7 +225,9 @@ def get_name(df):
     print(df.head())
     column_name = "source_file_with_dep"
     first_valid = df[column_name].first_valid_index()
+    print("&&&&&&&")
     print(first_valid)
+    print("&&&&&&&")
     source_file_ex = df.at[first_valid, column_name]
     print(source_file_ex)
     proj = source_file_ex.split("/")[0]
