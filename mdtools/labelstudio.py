@@ -126,7 +126,9 @@ def post_process_annotations(ls_json, data_str="data/local-files/?d="):
                         bb = (
                             pd.json_normalize(bb["prediction"]["result"], sep = "_", max_level=1)
                             .assign(source_file = "/".join(ann["data"]["image"]
-                            .replace(data_str, "").strip("/").split('/')[1:]))
+                                .replace(data_str, "").strip("/").split('/')[1:]))
+                            .assign(source_file_with_dep = "/".join(ann["data"]["image"]
+                                .replace(data_str, "").strip("/").split('/')[0:]))
                             .rename(columns={'from_name': 'variable'})
                         )
 
