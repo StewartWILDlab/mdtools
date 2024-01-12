@@ -225,23 +225,16 @@ def get_name(df):
     print(df.head())
     column_name = "source_file_with_dep"
     col = df[column_name].tolist()
-    # from math import isnan
     first_valid = next(x for x in col if not pd.isna(x))
-    print("&&&&&&&")
-    # print(col)
-    print(col[0])
-    print(type(col[0]))
-    print(first_valid)
-    print("&&&&&&&")
-    source_file_ex = df.at[first_valid, column_name]
-    print(source_file_ex)
-    proj = source_file_ex.split("/")[0]
+    dep = first_valid.split("/")[0]
+    proj = first_valid.split("/")[1]
+    print(dep)
     print(proj)
     dt = datetime.now().strftime("%Y_%m_%d-%p%I_%M_%S")
 
     # print(df.head())
 
-    return f"{proj}_{dt}"
+    return f"{dep}_{proj}_{dt}"
 
 # def clean_csv_output(ls_csv, out_file, data_str="data/local-files/?d=", write=True):
 
