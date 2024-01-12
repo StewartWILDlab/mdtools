@@ -227,7 +227,9 @@ def get_name(df):
     col = df[column_name].tolist()
     first_valid = next(x for x in col if not isnan(x))
     print("&&&&&&&")
-    print(first_valid)
+    print(col)
+    print(col[0])
+    print(type(col[0]))
     print("&&&&&&&")
     source_file_ex = df.at[first_valid, column_name]
     print(source_file_ex)
