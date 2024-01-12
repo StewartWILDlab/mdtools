@@ -218,7 +218,8 @@ def get_name(df):
 
     print(df.head())
 
-    dep, source_file_ex = df["source_file_with_dep"].iloc[0:1]
+    dep = df["source_file_with_dep"].iloc[0]
+    source_file_ex = df["source_file_with_dep"].iloc[1]
     print(dep)
     print(source_file_ex)
     proj = source_file_ex.split("/")[0]
