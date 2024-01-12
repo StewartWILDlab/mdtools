@@ -224,7 +224,8 @@ def get_name(df):
 
     print(df.head())
     column_name = "source_file_with_dep"
-    first_valid = df[column_name].first_valid_index()
+    col = df[column_name].tolist()
+    first_valid = next(x for x in col if not isnan(x))
     print("&&&&&&&")
     print(first_valid)
     print("&&&&&&&")
